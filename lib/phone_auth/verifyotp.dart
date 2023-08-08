@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wecare/screens/homescreen.dart';
 
+import '../reusables.dart';
+
 class Verifyotp extends StatefulWidget {
   final String verificationId;
   const Verifyotp({super.key, required this.verificationId});
@@ -14,17 +16,12 @@ class Verifyotp extends StatefulWidget {
 class _VerifyotpState extends State<Verifyotp> {
   TextEditingController otpcontroller = TextEditingController();
 
-  void maketoast(String s) {
-    var snackBar = SnackBar(
-      content: Text(s),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  
 
   void verifyotp() async {
     String otp = otpcontroller.text.trim();
     if (otp.length < 6) {
-      maketoast("Otp Length must be 6 Digit");
+      maketoast(msg: "Otp Length must be 6 Digit",ctx: context);
       return;
     }
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -44,7 +41,8 @@ class _VerifyotpState extends State<Verifyotp> {
       }
     } on FirebaseAuthException catch (ex) {
       String e = ex.code.toString();
-      maketoast(e);
+       maketoast(msg:e,ctx: context);
+     
     }
   }
 
@@ -54,6 +52,8 @@ class _VerifyotpState extends State<Verifyotp> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text("Enter OTP",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Colors.blue ),),
+          
           TextField(
             controller: otpcontroller,
             decoration: InputDecoration(labelText: "Enter 6 digit OTP"),
@@ -62,11 +62,8 @@ class _VerifyotpState extends State<Verifyotp> {
           SizedBox(
             height: 20,
           ),
-          CupertinoButton(
-            child: Text("Verify Otp"),
-            onPressed: verifyotp,
-            color: Colors.blue,
-          )
+          Button(context, "Verify OTP", ()=>verifyotp()),
+        
         ]),
       ),
     );
