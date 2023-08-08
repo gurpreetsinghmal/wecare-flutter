@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>986216229652-5fnu1ghdilnfpup3v13a982oqj4s132u.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.986216229652-5fnu1ghdilnfpup3v13a982oqj4s132u</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC1Sv5YPTfZIk4DHp4DRxSX76WLNJOotDc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>986216229652</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>in.nic.faridkot.wecare.wecare</string>
+	<key>PROJECT_ID</key>
+	<string>wecare-5c07b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wecare-5c07b.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:986216229652:ios:ac3165572dc36fb583b001</string>
+</dict>
+</plist>

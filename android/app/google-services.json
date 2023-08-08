@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "986216229652",
+    "project_id": "wecare-5c07b",
+    "storage_bucket": "wecare-5c07b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986216229652:android:2f4cf16de708097183b001",
+        "android_client_info": {
+          "package_name": "in.nic.faridkot.wecare.wecare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986216229652-bhjqj46or8jiif4evvnvnhaqnsjbu362.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.nic.faridkot.wecare.wecare",
+            "certificate_hash": "ce447852a761e009fd43c4a8a96fd8a9ab002158"
+          }
+        },
+        {
+          "client_id": "986216229652-s13pbvadfmrufis8pe05t4mslns1nt7i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmbx5oHoQHmAe8qT8oSyapo0TMpgNDXzc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986216229652-s13pbvadfmrufis8pe05t4mslns1nt7i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "986216229652-5fnu1ghdilnfpup3v13a982oqj4s132u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.nic.faridkot.wecare.wecare"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
