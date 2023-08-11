@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wecare/phone_auth/verifyotp.dart';
+import 'package:http/http.dart' as http;
 
 import '../reusables.dart';
 
@@ -18,7 +20,7 @@ class _LoginscreenState extends State<Loginscreen> {
   TextEditingController phonecontroller = TextEditingController();
   bool _c=false;
   void sendotp() async {
-    String phone = "+91" + phonecontroller.text.trim();
+    String phone = "+91${phonecontroller.text.trim()}";
     if(phonecontroller.text.length<10){
        maketoast(msg:"Invalid Phone Number",ctx: context);
       return;
@@ -27,7 +29,20 @@ class _LoginscreenState extends State<Loginscreen> {
        maketoast(msg:"Kindly tick Check box",ctx: context);
        return;
     }
-    await FirebaseAuth.instance.verifyPhoneNumber(
+    var p='123';
+
+     bool u=await userCheckExsist(pctx: context,phone: p);
+     if(u){
+        proceedSms(phone);
+     }
+     else{
+      print("failed");
+     }
+    
+  }
+
+  void proceedSms(phone) async{
+     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phone,
         codeSent: (verificationId, resendToken) {
           Navigator.push(
@@ -46,14 +61,50 @@ class _LoginscreenState extends State<Loginscreen> {
         timeout: Duration(seconds: 30));
   }
 
+  Future<bool> userCheckExsist({pctx,phone}) async{
+     try{
+       var url =
+      Uri.https('vcare.aims.96.lt', '/api/data', {'access_token':phone});
+  
+      var response = await http.get(url);
+      if(response.statusCode==200){
+          Map<String, dynamic> jsonResponse =jsonDecode(response.body);
+          if(jsonResponse.containsKey("code"))
+             {maketoast(msg:jsonResponse["msg"], ctx: pctx);}
+          if(jsonResponse.containsKey("id"))
+            {
+              //user found
+              return true;
+            }
+          
+
+          // if(jsonResponse["code"]){
+          //   maketoast(msg:jsonResponse["msg"], ctx: pctx);
+           
+          // }
+          // else if(jsonResponse["name"])
+          // {print(jsonResponse);
+          // return true;
+          // }
+       
+      }
+      else
+      {
+        maketoast(msg:"Server Down", ctx: pctx);
+      }
+    }
+    catch(e){
+      maketoast(msg:"Something Went Wrong $e", ctx: pctx);
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
      double w= MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body:
-
-          SingleChildScrollView(
+      body:SingleChildScrollView(
             child: Container(
               child: Stack(
                 children: [
@@ -61,12 +112,11 @@ class _LoginscreenState extends State<Loginscreen> {
                     alignment: Alignment.topLeft,
                     width: w,
                     height: h*0.4,
-                    child: Padding(
+                    child:  Padding(
                       padding: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width*0.1, MediaQuery.of(context).size.height*0.17, 0,0),
                       child: Text('Login', textAlign: TextAlign.start, style: TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold),),
                     ),
-                    
-                    decoration: const BoxDecoration(
+                    decoration:  BoxDecoration(
                         color: Colors.blueAccent
                     ),
                   ),
@@ -111,59 +161,18 @@ class _LoginscreenState extends State<Loginscreen> {
 
                                   ],
                                 ),
-                                SizedBox(height: 0),
                                 
                                 Button(context, "Send OTP", ()=>sendotp()),
-
-
-
-                              
                               ],
                             ),
 
                           ),
                         ),
-
-
-
-
-
-                  
-
-
-
-
                 ],
               ),
-
-
-
-
-
-
-
-    ),
+            ),
           ),
       );
-     Scaffold(
-      backgroundColor: Colors.blue[50],
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          TextField(
-            controller: phonecontroller,
-            decoration: InputDecoration(labelText: "Phone Number"),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          CupertinoButton(
-            child: Text("SignIn"),
-            onPressed: sendotp,
-            color: Colors.blue,
-          )
-        ]),
-      ),
-    );
+   
   }
 }

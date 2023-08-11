@@ -39,9 +39,7 @@ Container Button(BuildContext context, String title, Function onTap) {
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
-      onPressed: () {
-        onTap();
-      },
+      onPressed: ()=>onTap,
       child: Text(
         title,
         style: const TextStyle(
@@ -65,4 +63,34 @@ void maketoast({required String msg,required BuildContext ctx}) {
       content: Text(msg),
     );
     ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
+void makeSuccesstoast({required String msg,required BuildContext ctx}) {
+    var snackBar = SnackBar(
+      backgroundColor: Colors.green[500],
+      content: Text(msg,style: TextStyle(fontSize: 18),),
+    );
+    ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
+  }
+
+  Widget btncard(IconData icon, String title) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(30),
+      ),
+      color: Colors.blue[50],
+      elevation: 10,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 40,
+            ),
+            Text(title)
+          ],
+        ),
+      ),
+    );
   }
