@@ -162,7 +162,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                   ],
                                 ),
                                 
-                                Button(context, "Send OTP", ()=>sendotp()),
+                                Button(context, "Send OTP",sendotp),
                               ],
                             ),
 

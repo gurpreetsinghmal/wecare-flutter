@@ -39,7 +39,7 @@ Container Button(BuildContext context, String title, Function onTap) {
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
     child: ElevatedButton(
-      onPressed: ()=>onTap,
+      onPressed:()=>onTap(),
       child: Text(
         title,
         style: const TextStyle(
