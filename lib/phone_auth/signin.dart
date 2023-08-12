@@ -19,17 +19,28 @@ class _LoginscreenState extends State<Loginscreen> {
  
   TextEditingController phonecontroller = TextEditingController();
   bool _c=false;
+  bool loading=false;
+
   void sendotp() async {
+    setState(() {
+         loading=true;
+       });
     String phone = "+91${phonecontroller.text.trim()}";
     if(phonecontroller.text.length<10){
        maketoast(msg:"Invalid Phone Number",ctx: context);
+       setState(() {
+         loading=false;
+       });
       return;
     }
     else if(!_c){
        maketoast(msg:"Kindly tick Check box",ctx: context);
+       setState(() {
+         loading=false;
+       });
        return;
     }
-    var p='123';
+    var p=phonecontroller.text;
 
      bool u=await userCheckExsist(pctx: context,phone: p);
      if(u){
@@ -37,6 +48,9 @@ class _LoginscreenState extends State<Loginscreen> {
      }
      else{
       print("failed");
+      setState(() {
+         loading=false;
+       });
      }
     
   }
@@ -55,38 +69,25 @@ class _LoginscreenState extends State<Loginscreen> {
         },
         verificationCompleted: (credentials) {},
         verificationFailed: (ex) {
-          log(ex.code.toString());
+          maketoast(msg:ex.toString(), ctx: context);
         },
         codeAutoRetrievalTimeout: (verificationId) {},
-        timeout: Duration(seconds: 30));
+        timeout: const Duration(seconds: 30));
   }
 
   Future<bool> userCheckExsist({pctx,phone}) async{
      try{
        var url =
-      Uri.https('vcare.aims.96.lt', '/api/data', {'access_token':phone});
+      Uri.https('vcare.aims.96.lt', '/api/genotp', {'mobile':phone});
   
       var response = await http.get(url);
       if(response.statusCode==200){
-          Map<String, dynamic> jsonResponse =jsonDecode(response.body);
-          if(jsonResponse.containsKey("code"))
-             {maketoast(msg:jsonResponse["msg"], ctx: pctx);}
-          if(jsonResponse.containsKey("id"))
-            {
-              //user found
-              return true;
-            }
-          
-
-          // if(jsonResponse["code"]){
-          //   maketoast(msg:jsonResponse["msg"], ctx: pctx);
-           
-          // }
-          // else if(jsonResponse["name"])
-          // {print(jsonResponse);
-          // return true;
-          // }
-       
+          Map<String, dynamic> json =jsonDecode(response.body);
+          switch(json["code"]){
+            case 200:return true;
+            case 404:maketoast(msg:json["msg"], ctx: pctx);break;
+            case 500:maketoast(msg:json["msg"], ctx: pctx);break;
+          }       
       }
       else
       {
@@ -162,7 +163,7 @@ class _LoginscreenState extends State<Loginscreen> {
                                   ],
                                 ),
                                 
-                                Button(context, "Send OTP",sendotp),
+                                Button(context, loading?"Sending...":"Send OTP",sendotp),
                               ],
                             ),
 

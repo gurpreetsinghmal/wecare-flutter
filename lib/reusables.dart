@@ -73,7 +73,7 @@ void makeSuccesstoast({required String msg,required BuildContext ctx}) {
     ScaffoldMessenger.of(ctx).showSnackBar(snackBar);
   }
 
-  Widget btncard(IconData icon, String title) {
+Widget btncard(IconData icon, String title) {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
@@ -94,3 +94,63 @@ void makeSuccesstoast({required String msg,required BuildContext ctx}) {
       ),
     );
   }
+  
+// DropdownButtonFormField dropdown(BuildContext context, List<String> city, String initial_val, Function setState, String text ){
+//   return DropdownButtonFormField(
+//       value: initial_val,
+//       items: city.map((e) => DropdownMenuItem(child: Text(e), value: e,)).toList(),
+//       icon: Icon(Icons.keyboard_arrow_down_rounded),
+//       decoration: InputDecoration(
+//         labelText: text,
+//         border: UnderlineInputBorder(),
+//       ),
+//       onChanged:(val){
+//         initial_val= val as String;
+//         /*setState(() {
+//           initial_val= val as String;
+//         });*/}
+//   );
+// }
+
+// TextFormField reusableTextformField(String text, bool isPasswordType, TextInputType keyboard) {
+//   return TextFormField(
+//       //controller: controller,
+//       obscureText: isPasswordType,
+//       enableSuggestions: !isPasswordType,
+//       autocorrect: !isPasswordType,
+//       cursorColor: Colors.black,
+//       style: TextStyle(color: Colors.black.withOpacity(0.9), fontSize: 20),
+//       decoration: InputDecoration(
+//         // prefixIcon: Icon(
+//         //icon,
+//         //color: Colors.black,
+//         // ),
+//         labelText: text,
+//         labelStyle: TextStyle(color: Colors.black.withOpacity(0.9),),
+//         filled: true,
+//         floatingLabelBehavior: FloatingLabelBehavior.never,
+//         fillColor: Colors.white.withOpacity(0.3),
+
+//         // border: OutlineInputBorder(
+
+//         // borderRadius: BorderRadius.circular(15.0),
+//         // borderSide: const BorderSide(width: 0, style: BorderStyle.none)),
+//       ),
+//       keyboardType: keyboard,
+//   );
+// }
+
+//  showCupertinoDialog(context: context, builder:(BuildContext context) {
+//                   SizedBox(
+//                     height: 300,
+//                     child: CupertinoDatePicker(
+//                       initialDateTime: DateTime.now(),
+//                       mode: CupertinoDatePickerMode.date,
+//                       onDateTimeChanged: (value) {
+//                         var sdate=value;
+//                           tt1Controller.text="${sdate.day<10?"0${sdate.day}":sdate.day}-${sdate.month<10?"0${sdate.month}":sdate.month}-${sdate.year}";
+               
+//                     },),
+//                   );
+//                 },
+//                 );  

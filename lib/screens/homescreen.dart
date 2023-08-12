@@ -22,7 +22,9 @@ class _HomescreenState extends State<Homescreen> {
   String _mobile = "";
   String _role = "";
   String _district = "";
+  String _distcode="";
   String _block = "";
+  String _blockcode="";
   String _village = "";
   String _profileimg = "";
   int _index = 0;
@@ -43,8 +45,9 @@ class _HomescreenState extends State<Homescreen> {
 
   Future<void> getdata() async {
     try {
+      final token =FirebaseAuth.instance.currentUser!.uid;
       var url =
-          Uri.https('vcare.aims.96.lt', '/api/data', {'access_token': '123'});
+          Uri.https('vcare.aims.96.lt', '/api/data', {'access_token': token});
 
       var response = await http.get(url);
       if (response.statusCode == 200) {
@@ -56,7 +59,9 @@ class _HomescreenState extends State<Homescreen> {
           _mobile = jsonResponse["mobile"];
           _role = jsonResponse["role"] ?? "NA";
           _district = jsonResponse["district"] ?? "NA";
+          _distcode= jsonResponse["dist_code"].toString();
           _block = jsonResponse["block"] ?? "NA";
+          _blockcode= jsonResponse["block_code"].toString();
           _village = jsonResponse["village"] ?? "NA";
           _profileimg = jsonResponse["photo"];
         }
@@ -208,10 +213,7 @@ class _HomescreenState extends State<Homescreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      "Village : $_village",
-                      style: mytextstyle,
-                    ),
+                  
                     const SizedBox(
                       height: 20,
                     ),
@@ -225,7 +227,7 @@ class _HomescreenState extends State<Homescreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AddNewPatient(),
+                              builder: (context)=>AddNewPatient(_distcode, _blockcode),
                             ),
                           );
                         },
