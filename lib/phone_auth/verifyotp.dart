@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:wecare/screens/homescreen.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,25 +42,28 @@ class _VerifyotpState extends State<Verifyotp> {
       if (userCredential.user != null) {
         await createAccessToken(userCredential);
         Navigator.popUntil(context, (route) => route.isFirst);
-            Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => Homescreen(),
-              ),
-            );
+        Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => Homescreen(),
+          ),
+        );
       }
     } on FirebaseAuthException catch (ex) {
       String e = ex.code.toString();
       maketoast(msg: e, ctx: context);
+      setState(() {
+        loading = false;
+      });
     }
   }
 
   Future createAccessToken(UserCredential userCredential) async {
     try {
       final mobile = userCredential.user!.phoneNumber!.substring(3);
-     
+
       final token = userCredential.user!.uid;
-    
+
       final uri = Uri.parse('https://vcare.aims.96.lt/api/updatetoken');
 
       final headers = {'Content-Type': 'application/json'};
@@ -67,8 +71,7 @@ class _VerifyotpState extends State<Verifyotp> {
       String jsonBody = json.encode(body);
       final encoding = Encoding.getByName('utf-8');
 
-      var response = await http.post(
-          uri,
+      var response = await http.post(uri,
           headers: headers, body: jsonBody, encoding: encoding);
 
       if (response.statusCode == 200) {
@@ -91,7 +94,7 @@ class _VerifyotpState extends State<Verifyotp> {
       maketoast(msg: "Something Went Wrong $e", ctx: context);
     }
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,20 +106,52 @@ class _VerifyotpState extends State<Verifyotp> {
             style: TextStyle(
                 fontSize: 30, fontWeight: FontWeight.bold, color: Colors.blue),
           ),
-          TextField(
-            controller: otpcontroller,
-            decoration: InputDecoration(labelText: "Enter 6 digit OTP"),
-            maxLength: 6,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 80),
+            child: TextFormField(
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 3),
+              onChanged: (v) => setState(() {}),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
+              controller: otpcontroller,
+              decoration: getinputstyle(hint: "Enter 6 Digit OTP"),
+              maxLength: 6,
+            ),
           ),
           SizedBox(
             height: 20,
           ),
           Button(context, loading ? "Verifying..." : "Verify OTP",
               () => verifyotp()),
+          loading
+              ? CircularProgressIndicator(
+                  color: Colors.blue,
+                )
+              : SizedBox(height: 0),
         ]),
       ),
     );
   }
 
- 
+  getinputstyle({required String hint}) {
+    return InputDecoration(
+        hintText: hint,
+        counterText: "",
+        prefixIcon: otpcontroller.text.length == 6
+            ? Icon(Icons.key)
+            : Icon(Icons.key_off),
+        prefixIconColor:
+            otpcontroller.text.length == 6 ? Colors.blue : Colors.grey,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.purple, width: 2),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: Colors.blue),
+        ));
+  }
 }

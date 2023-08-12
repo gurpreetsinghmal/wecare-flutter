@@ -32,9 +32,9 @@ TextField reusableTextField(String text,  bool isPasswordType,
 
 }
 
-Container Button(BuildContext context, String title, Function onTap) {
+Container Button(BuildContext context, String title, Function onTap,{width=200}) {
   return Container(
-    width: MediaQuery.of(context).size.width,
+    width: width,
     height: 50,
     margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
     decoration: BoxDecoration(borderRadius: BorderRadius.circular(90)),
