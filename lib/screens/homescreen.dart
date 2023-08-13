@@ -22,9 +22,9 @@ class _HomescreenState extends State<Homescreen> {
   String _mobile = "";
   String _role = "";
   String _district = "";
-  String _distcode="";
+  String _distcode = "";
   String _block = "";
-  String _blockcode="";
+  String _blockcode = "";
   String _village = "";
   String _profileimg = "";
   int _index = 0;
@@ -38,14 +38,14 @@ class _HomescreenState extends State<Homescreen> {
     await Future.delayed(Duration(seconds: 1));
 
     if (s == "ok") {
-         return true;
+      return true;
     }
     return false;
   }
 
   Future<void> getdata() async {
     try {
-      final token =FirebaseAuth.instance.currentUser!.uid;
+      final token = FirebaseAuth.instance.currentUser!.uid;
       var url =
           Uri.https('vcare.aims.96.lt', '/api/data', {'access_token': token});
 
@@ -59,9 +59,9 @@ class _HomescreenState extends State<Homescreen> {
           _mobile = jsonResponse["mobile"];
           _role = jsonResponse["role"] ?? "NA";
           _district = jsonResponse["district"] ?? "NA";
-          _distcode= jsonResponse["dist_code"].toString();
+          _distcode = jsonResponse["dist_code"].toString();
           _block = jsonResponse["block"] ?? "NA";
-          _blockcode= jsonResponse["block_code"].toString();
+          _blockcode = jsonResponse["block_code"].toString();
           _village = jsonResponse["village"] ?? "NA";
           _profileimg = jsonResponse["photo"];
         }
@@ -213,7 +213,6 @@ class _HomescreenState extends State<Homescreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                  
                     const SizedBox(
                       height: 20,
                     ),
@@ -221,17 +220,20 @@ class _HomescreenState extends State<Homescreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  
                   children: [
                     InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context)=>AddNewPatient(_distcode, _blockcode),
-                            ),
-                          );
-                        },
-                        child: btncard(Icons.person_add, "Add Patient")),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddNewPatient(_distcode, _blockcode),
+                          ),
+                        );
+                      },
+                      child: btncard(Icons.person_add, "Add Patient"),
+                    ),
                     InkWell(
                       onTap: () {
                         showModalBottomSheet(
@@ -276,21 +278,20 @@ class _HomescreenState extends State<Homescreen> {
                                                                 .text
                                                                 .trim();
                                                         Navigator.pop(context);
-                                                         SearchController
-                                                              .text = '';
-                                                              setState(() {
-                                                                loaded=false;
-                                                              });
-                                                        
-                                                         searchRCHorMobile(data)
+                                                        SearchController.text =
+                                                            '';
+                                                        setState(() {
+                                                          loaded = false;
+                                                        });
+
+                                                        searchRCHorMobile(data)
                                                             .then((value) {
-                                                              setState(() {
-                                                                loaded=true;
-                                                              });
+                                                          setState(() {
+                                                            loaded = true;
+                                                          });
                                                           maketoast(
-                                                              msg:"done",
+                                                              msg: "done",
                                                               ctx: context);
-                                                         
                                                         });
                                                       }
                                                     }
@@ -306,6 +307,18 @@ class _HomescreenState extends State<Homescreen> {
                       },
                       child: btncard(Icons.edit_calendar, "Update Patient"),
                     ),
+                    //  InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             AddNewPatient(_distcode, _blockcode),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: btncard(Icons.person_add, "Add Patient"),
+                    // ),
                   ],
                 ),
               ],

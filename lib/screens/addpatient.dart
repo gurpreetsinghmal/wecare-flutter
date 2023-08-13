@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:js_util';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:wecare/models/patient.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
 
@@ -94,17 +96,24 @@ class _AddNewPatientState extends State<AddNewPatient> {
 
   @override
   Widget build(BuildContext context) {
-    void checkdata() {
+    Future<void>  checkdata() async {
       if (_formkey.currentState!.validate()) {
-        patient["name"]=nameController.text.trim();
-        patient["husbandName"]=husbandnameController.text.trim();
-        patient["village"]=villagevalue;
-        patient["mobile"]=mobileController.text.trim();
+        patient["name"] = nameController.text.trim();
+        patient["husbandName"] = husbandnameController.text.trim();
+        patient["village"] = villagevalue;
+        patient["mobile"] = mobileController.text.trim();
+        patient["access_token"] = FirebaseAuth.instance.currentUser!.uid;
 
         print("data validated");
-        print(patient);
+
+        String? s=await postAddPatient(jsonEncode(patient));
+
+        if(s!=null){
+          print(s);
+        makeSuccesstoast(msg: s??"Null", ctx:context);
         Navigator.of(context).pop();
-        makeSuccesstoast(msg: "Data Validated", ctx: context);
+        }
+        
       }
     }
 
@@ -118,6 +127,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: const Text('Add Patient'),
       ),
       body: SingleChildScrollView(
@@ -127,12 +137,17 @@ class _AddNewPatientState extends State<AddNewPatient> {
               child: Container(
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      child: Icon(
-                        Icons.pregnant_woman,
-                        size: 30,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        child: Icon(
+                          Icons.pregnant_woman,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        radius: 30,
                       ),
-                      radius: 30,
                     ),
                     SizedBox(
                       height: 10,
@@ -438,21 +453,25 @@ class _AddNewPatientState extends State<AddNewPatient> {
                       /////    additional information switches
                       ListTile(
                         title: Text("TT1 "),
-                        subtitle: Text(tt1Controller.text,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
+                        subtitle: Text(
+                          tt1Controller.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.blue),
+                        ),
                         trailing: Switch(
                           value: tt1switch,
-                          onChanged: ((value) async{
+                          onChanged: ((value) async {
                             if (value) {
-                                final tt1date = await openSwitchDialog("TT1",tt1Controller);
-                                if (tt1date == "")
-                                  {return;}
-                               
+                              final tt1date =
+                                  await openSwitchDialog("TT1", tt1Controller);
+                              if (tt1date == "") {
+                                return;
                               }
-                              else{
-                                tt1Controller.clear();
-                              }
-                            setState(()  {
-                                tt1switch = value;
+                            } else {
+                              tt1Controller.clear();
+                            }
+                            setState(() {
+                              tt1switch = value;
                               patient["tt1switch"] = tt1Controller.text;
                             });
                           }),
@@ -460,22 +479,25 @@ class _AddNewPatientState extends State<AddNewPatient> {
                       ),
                       ListTile(
                         title: Text("TT2"),
-                         subtitle: Text(tt2Controller.text,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
-                      
+                        subtitle: Text(
+                          tt2Controller.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.blue),
+                        ),
                         trailing: Switch(
                           value: tt2switch,
-                         onChanged: ((value) async{
+                          onChanged: ((value) async {
                             if (value) {
-                                final tt2date = await openSwitchDialog("TT2",tt2Controller);
-                                if (tt2date == "")
-                                  {return;}
-                               
+                              final tt2date =
+                                  await openSwitchDialog("TT2", tt2Controller);
+                              if (tt2date == "") {
+                                return;
                               }
-                              else{
-                                tt2Controller.clear();
-                              }
-                            setState(()  {
-                                tt2switch = value;
+                            } else {
+                              tt2Controller.clear();
+                            }
+                            setState(() {
+                              tt2switch = value;
                               patient["tt2switch"] = tt2Controller.text;
                             });
                           }),
@@ -483,23 +505,25 @@ class _AddNewPatientState extends State<AddNewPatient> {
                       ),
                       ListTile(
                         title: Text("TTB"),
-                          subtitle: Text(ttbController.text,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
-                      
+                        subtitle: Text(
+                          ttbController.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.blue),
+                        ),
                         trailing: Switch(
                           value: ttbswitch,
-                          onChanged: ((value) async{
+                          onChanged: ((value) async {
                             if (value) {
-                                final ttbdate = await openSwitchDialog("TTB",ttbController);
-                                if (ttbdate == "")
-                                  {return;}
-                               
+                              final ttbdate =
+                                  await openSwitchDialog("TTB", ttbController);
+                              if (ttbdate == "") {
+                                return;
                               }
-                              else{
-                                ttbController.clear();
-                              }
-                            setState(()  {
-                              
-                                ttbswitch = value;
+                            } else {
+                              ttbController.clear();
+                            }
+                            setState(() {
+                              ttbswitch = value;
                               patient["ttbswitch"] = ttbController.text;
                             });
                           }),
@@ -507,20 +531,23 @@ class _AddNewPatientState extends State<AddNewPatient> {
                       ),
                       ListTile(
                         title: Text("Counselling about Diet"),
-                           subtitle: Text(consdietController.text,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blue),),
-                      
+                        subtitle: Text(
+                          consdietController.text,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.blue),
+                        ),
                         trailing: Switch(
                           value: counsDiet,
-                          onChanged: ((value) async{
-                            setState(()  {
-                                counsDiet = value;
-                                consdietController.text=value?"Yes":"No";
-                              patient["counsDiet"] = counsDiet;
+                          onChanged: ((value) async {
+                            setState(() {
+                              counsDiet = value;
+                              consdietController.text = value ? "Yes" : "No";
+                              patient["counsDiet"] = counsDiet ? "1" : "0";
                             });
                           }),
                         ),
                       ),
-                      Button(context, "Submit", checkdata),
+                      Center(child: Button(context, "Submit", checkdata)),
                       SizedBox(
                         height: 10,
                       ),
@@ -533,20 +560,22 @@ class _AddNewPatientState extends State<AddNewPatient> {
     );
   }
 
-  Future<String?> openSwitchDialog(id,controller) => showDialog<String?>(
+  Future<String?> openSwitchDialog(id, controller) => showDialog<String?>(
       context: context,
       builder: (context) => AlertDialog(
             title: Text(id),
             content: TextField(
               readOnly: true,
-              onTap: () async{
-               
-
-                DateTime? sdate= await showDatePicker(context: context, initialDate: DateTime.now(), 
-                firstDate: DateTime(2021), lastDate: DateTime.now(),
+              onTap: () async {
+                DateTime? sdate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2021),
+                  lastDate: DateTime.now(),
                 );
-                if(sdate!=null){
-                  controller.text="${sdate.day<10?"0${sdate.day}":sdate.day}-${sdate.month<10?"0${sdate.month}":sdate.month}-${sdate.year}";
+                if (sdate != null) {
+                  controller.text =
+                      "${sdate.day < 10 ? "0${sdate.day}" : sdate.day}-${sdate.month < 10 ? "0${sdate.month}" : sdate.month}-${sdate.year}";
                 }
               },
               autofocus: true,
@@ -554,10 +583,38 @@ class _AddNewPatientState extends State<AddNewPatient> {
               keyboardType: TextInputType.datetime,
               decoration: getinputstyle(hint: "Enter Date"),
             ),
-            actions: [TextButton(onPressed:(){
-                 Navigator.of(context).pop(controller.text);
-            }, child: Text("Ok"))],
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(controller.text);
+                  },
+                  child: Text("Ok"))
+            ],
           ));
 
-  
+  Future<String?> postAddPatient(String d) async {
+    Map<String, dynamic> json ;
+    try {
+      var url = Uri.https('vcare.aims.96.lt', '/api/addpatient');
+      Map<String, dynamic> data = jsonDecode(d);
+     
+      var response = await http.post(url,body: data);
+
+      if (response.statusCode == 200) {
+
+        json = jsonDecode(response.body);
+        if(json["code"]!=""){
+          return json["msg"];
+        }
+        return null;
+      } else {
+        return "Server Down";
+     
+      }
+    } catch (e) {
+      return "Something Went Wrong $e";
+     
+    }
+    
+  }
 }

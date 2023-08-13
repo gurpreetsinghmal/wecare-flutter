@@ -82,14 +82,17 @@ Widget btncard(IconData icon, String title) {
       elevation: 10,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 40,
-            ),
-            Text(title)
-          ],
+        child: Container(
+          
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 40,
+              ),
+              Text(title)
+            ],
+          ),
         ),
       ),
     );
