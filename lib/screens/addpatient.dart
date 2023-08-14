@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'dart:js_util';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wecare/models/patient.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
 
@@ -79,6 +77,8 @@ class _AddNewPatientState extends State<AddNewPatient> {
     super.initState();
     getvillagelist();
   }
+  
+  bool loading = false;
 
   getinputstyle({required String hint}) {
     return InputDecoration(
@@ -97,7 +97,11 @@ class _AddNewPatientState extends State<AddNewPatient> {
   @override
   Widget build(BuildContext context) {
     Future<void>  checkdata() async {
+
       if (_formkey.currentState!.validate()) {
+        setState(() {
+          loading=true;
+        });
         patient["name"] = nameController.text.trim();
         patient["husbandName"] = husbandnameController.text.trim();
         patient["village"] = villagevalue;
@@ -105,9 +109,11 @@ class _AddNewPatientState extends State<AddNewPatient> {
         patient["access_token"] = FirebaseAuth.instance.currentUser!.uid;
 
         print("data validated");
-
+        
         String? s=await postAddPatient(jsonEncode(patient));
-
+         setState(() {
+          loading=false;
+        });
         if(s!=null){
           print(s);
         makeSuccesstoast(msg: s??"Null", ctx:context);
@@ -117,15 +123,15 @@ class _AddNewPatientState extends State<AddNewPatient> {
       }
     }
 
-    final _citydrop = ['mansa', 'patiala', 'mohali'];
 
-    String? _selectedCity = 'mansa';
-    String? _selectedChoice = 'No';
-    double w = MediaQuery.of(context).size.width;
-    double h = MediaQuery.of(context).size.height;
-    bool isOpen = false;
 
-    return Scaffold(
+    return loading
+        ? Center(
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+            ),
+          )
+        : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: const Text('Add Patient'),
@@ -597,7 +603,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
     try {
       var url = Uri.https('vcare.aims.96.lt', '/api/addpatient');
       Map<String, dynamic> data = jsonDecode(d);
-     
+
       var response = await http.post(url,body: data);
 
       if (response.statusCode == 200) {

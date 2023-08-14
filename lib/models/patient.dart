@@ -6,6 +6,7 @@ Patient patientFromJson(String str) => Patient.fromJson(json.decode(str));
 String patientToJson(Patient data) => json.encode(data.toJson());
 
 class Patient {
+  int? id;
   String? currDeliveryCount;
   String? prevChildAge;
   String? previousDeliveryType;
@@ -16,11 +17,13 @@ class Patient {
   String? counsDiet;
   String? name;
   String? husbandName;
-  String? village;
+  int? village_id;
   String? mobile;
 
   Patient(
-      {this.currDeliveryCount,
+      {
+      this.id,
+      this.currDeliveryCount,
       this.prevChildAge,
       this.previousDeliveryType,
       this.sexPreviousChild,
@@ -30,7 +33,7 @@ class Patient {
       this.counsDiet,
       this.name,
       this.husbandName,
-      this.village,
+      this.village_id,
       this.mobile});
 
   Patient.fromJson(Map<String, dynamic> json) {
@@ -44,8 +47,9 @@ class Patient {
     counsDiet = json['counsDiet'];
     name = json['name'];
     husbandName = json['husbandName'];
-    village = json['village'];
+    village_id = json['village_id'];
     mobile = json['mobile'];
+    id = json['id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -60,8 +64,9 @@ class Patient {
     data['counsDiet'] = this.counsDiet;
     data['name'] = this.name;
     data['husbandName'] = this.husbandName;
-    data['village'] = this.village;
+    data['village_id'] = this.village_id;
     data['mobile'] = this.mobile;
+    data['id'] = this.id;
     return data;
   }
 }

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wecare/models/patient.dart';
 import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
@@ -28,19 +29,25 @@ class _HomescreenState extends State<Homescreen> {
   String _village = "";
   String _profileimg = "";
   int _index = 0;
+  Map<String,dynamic> record={};
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void popop() {
-    print("hi guru");
-  }
+  
+  Future<Map<String,dynamic>> searchRCHorMobile(mob) async {
+    
+     var url = Uri.https('vcare.aims.96.lt', '/api/searchpatient');
 
-  Future<bool> searchRCHorMobile(s) async {
-    await Future.delayed(Duration(seconds: 1));
-
-    if (s == "ok") {
-      return true;
+    final res = await http.post(url,body: {"mobile":mob});
+    if (res.statusCode == 200) {
+      var jsonData = json.decode(res.body);
+     
+      record=jsonData;
+     
+    } else {
+      record={"code":"500","msg":"api error"};
     }
-    return false;
+
+    return record;
   }
 
   Future<void> getdata() async {
@@ -66,7 +73,7 @@ class _HomescreenState extends State<Homescreen> {
           _profileimg = jsonResponse["photo"];
         }
       } else {
-        print(response.body);
+        
       }
     } catch (e) {
       maketoast(msg: "exception:${e.toString()}", ctx: context);
@@ -163,9 +170,7 @@ class _HomescreenState extends State<Homescreen> {
                       }),
                     ),
                   ),
-                  ListTile(
-                    leading: Icon(Icons.home),
-                  )
+                 
                 ],
               ),
             ),
@@ -220,7 +225,6 @@ class _HomescreenState extends State<Homescreen> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  
                   children: [
                     InkWell(
                       onTap: () {
@@ -240,68 +244,101 @@ class _HomescreenState extends State<Homescreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return SizedBox(
-                                height: 400,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(18.0),
-                                  child: Column(
-                                    children: [
-                                      Text("Search"),
-                                      Form(
-                                          key: _formkey,
-                                          child: Column(
-                                            children: [
-                                              TextFormField(
-                                                controller: SearchController,
-                                                decoration: InputDecoration(
-                                                    labelText:
-                                                        "Enter Mobile / RCH ID"),
-                                                validator: (v) {
-                                                  if (v == null || v.isEmpty) {
-                                                    return "Enter Search Value";
-                                                  }
-                                                  return null;
-                                                },
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              ),
-                                              CupertinoButton(
-                                                  color: Colors.blue,
-                                                  onPressed: () {
-                                                    if (_formkey.currentState!
-                                                        .validate()) {
-                                                      if (SearchController
-                                                              .text.length >
-                                                          0) {
-                                                        final data =
-                                                            SearchController
-                                                                .text
-                                                                .trim();
-                                                        Navigator.pop(context);
-                                                        SearchController.text =
-                                                            '';
-                                                        setState(() {
-                                                          loaded = false;
-                                                        });
-
-                                                        searchRCHorMobile(data)
-                                                            .then((value) {
+                                  height: 400,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: Column(
+                                      children: [
+                                        Text("Search"),
+                                        Form(
+                                            key: _formkey,
+                                            child: StatefulBuilder(builder:
+                                          (context, StateSetter setState) {
+                                            return Column(
+                                              children: [
+                                                TextFormField(
+                                                  controller: SearchController,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Enter Mobile / RCH ID"),
+                                                  validator: (v) {
+                                                    if (v == null || v.isEmpty) {
+                                                      return "Enter Search Value";
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CupertinoButton(
+                                                    color: Colors.blue,
+                                                    onPressed: () async {
+                                                      if (_formkey.currentState!
+                                                          .validate()) {
+                                                        if (SearchController.text.length >0) {
+                                                          final data =
+                                                              SearchController
+                                                                  .text
+                                                                  .trim();
+                                                          
+                                                          
+                              
+                                                          var res =await searchRCHorMobile(data);
+                                                          if(res.isNotEmpty){
+                                                            SearchController.clear();
+                                                            
+                                                          }else{
+                                                            maketoast(msg: "No Record Found", ctx: context);
+                                                          }
+                                                          // Navigator.pop(context);
+                                                           
+                                                          
                                                           setState(() {
                                                             loaded = true;
-                                                          });
-                                                          maketoast(
-                                                              msg: "done",
-                                                              ctx: context);
-                                                        });
+                                                          }); 
+                                                           
+                                                         
+                              
+                              
+                                                        }
                                                       }
-                                                    }
-                                                  },
-                                                  child: Text("Search"))
-                                            ],
-                                          ))
-                                    ],
+                                                    },
+                                                    child: Text("Search")),
+                                                    SizedBox(height: 10),
+                                                    
+                                                    // record.isEmpty?SizedBox(width:1):
+                                                      record["code"]==200?
+                                                      ListTile(
+                                                        onTap: (){
+
+                                                          Map<String,dynamic>  x=(record["patient"][0]) as Map<String,dynamic> ;
+                                                          String villagename=x["village"]["name"];
+                                                          // x.remove('village');
+                                                          // print(json.encode(x));
+                                                          Patient p=patientFromJson(json.encode(x));
+
+                                                          Navigator.pop(context);
+                                                          record.clear();
+                                                          Navigator.push(context,CupertinoPageRoute(builder:(context)=>UpdatePatient(p,villagename)));
+                                                        },
+                                                        leading: Icon(Icons.person),
+                                                        trailing: Text(record["patient"][0]["village"]["name"].toString(),style: TextStyle(color: Colors.white),),
+                                                        iconColor: Colors.white,
+                                                        tileColor: Colors.blue,
+                                                        title:Text(record["patient"][0]["name"].toString().toUpperCase(),style: TextStyle(color: Colors.white),) ,
+                                                      )
+                                                    :
+                                                    Text(record["msg"]??"")
+                                                    
+                                              ],
+                                            );}
+                                            ),
+                                            )
+                                      ],
+                                    ),
                                   ),
-                                ),
+                                
                               );
                             });
                       },
@@ -326,3 +363,4 @@ class _HomescreenState extends State<Homescreen> {
           );
   }
 }
+

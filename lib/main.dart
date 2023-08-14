@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:wecare/firebase_options.dart';
 import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/phone_auth/verifyotp.dart';
 import 'package:wecare/screens/homescreen.dart';
+import 'package:wecare/screens/splashscreen.dart';
 
 
 void main() async {
@@ -24,12 +26,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: (FirebaseAuth.instance.currentUser != null)
-          ? const Homescreen()
-          : const Loginscreen(),
+      home: SplashScreen(),
     );
   }
 }
