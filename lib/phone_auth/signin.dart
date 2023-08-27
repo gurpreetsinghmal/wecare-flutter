@@ -22,6 +22,7 @@ class _LoginscreenState extends State<Loginscreen> {
   bool loading = false;
 
   void sendotp() async {
+    print("Data");
     setState(() {
       loading = true;
     });
@@ -195,8 +196,13 @@ class _LoginscreenState extends State<Loginscreen> {
                         ),
                       ),
                       SizedBox(height: 30),
-                      Button(context, loading ? "Sending..." : "Send OTP",
-                          sendotp),
+                      TextButton(
+
+                        onPressed: sendotp,
+                        child: Text('Looks like a FlatButton'),
+                      ),
+                      // Button(context, loading ? "Sending..." : "Send OTP",
+                      //     sendotp),
                       loading
                           ? CircularProgressIndicator(
                               color: Colors.blue,

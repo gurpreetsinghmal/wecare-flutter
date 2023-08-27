@@ -11,6 +11,8 @@ import 'package:http/http.dart' as http;
 import 'package:wecare/screens/addpatient.dart';
 import 'package:wecare/screens/updatepatient.dart';
 
+import 'ANMScreens/updatescreen.dart';
+
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
@@ -29,22 +31,19 @@ class _HomescreenState extends State<Homescreen> {
   String _village = "";
   String _profileimg = "";
   int _index = 0;
-  Map<String,dynamic> record={};
+  Map<String, dynamic> record = {};
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  
-  Future<Map<String,dynamic>> searchRCHorMobile(mob) async {
-    
-     var url = Uri.https('vcare.aims.96.lt', '/api/searchpatient');
+  Future<Map<String, dynamic>> searchRCHorMobile(mob) async {
+    var url = Uri.https('vcare.aims.96.lt', '/api/searchpatient');
 
-    final res = await http.post(url,body: {"mobile":mob});
+    final res = await http.post(url, body: {"mobile": mob});
     if (res.statusCode == 200) {
       var jsonData = json.decode(res.body);
-     
-      record=jsonData;
-     
+
+      record = jsonData;
     } else {
-      record={"code":"500","msg":"api error"};
+      record = {"code": "500", "msg": "api error"};
     }
 
     return record;
@@ -72,9 +71,7 @@ class _HomescreenState extends State<Homescreen> {
           _village = jsonResponse["village"] ?? "NA";
           _profileimg = jsonResponse["photo"];
         }
-      } else {
-        
-      }
+      } else {}
     } catch (e) {
       maketoast(msg: "exception:${e.toString()}", ctx: context);
     }
@@ -170,7 +167,6 @@ class _HomescreenState extends State<Homescreen> {
                       }),
                     ),
                   ),
-                 
                 ],
               ),
             ),
@@ -178,6 +174,142 @@ class _HomescreenState extends State<Homescreen> {
               backgroundColor: Colors.blue,
               title: Text("Home"),
               actions: [
+                IconButton(
+                    onPressed: () => {
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SizedBox(
+                                  height: 400,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: Column(
+                                      children: [
+                                        Text("Search"),
+                                        Form(
+                                          key: _formkey,
+                                          child: StatefulBuilder(builder:
+                                              (context, StateSetter setState) {
+                                            return Column(
+                                              children: [
+                                                TextFormField(
+                                                  controller: SearchController,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                          "Enter Mobile / RCH ID"),
+                                                  validator: (v) {
+                                                    if (v == null ||
+                                                        v.isEmpty) {
+                                                      return "Enter Search Value";
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CupertinoButton(
+                                                    color: Colors.blue,
+                                                    onPressed: () async {
+                                                      if (_formkey.currentState!
+                                                          .validate()) {
+                                                        if (SearchController
+                                                                .text.length >
+                                                            0) {
+                                                          final data =
+                                                              SearchController
+                                                                  .text
+                                                                  .trim();
+
+                                                          var res =
+                                                              await searchRCHorMobile(
+                                                                  data);
+                                                          if (res.isNotEmpty) {
+                                                            SearchController
+                                                                .clear();
+                                                          } else {
+                                                            maketoast(
+                                                                msg:
+                                                                    "No Record Found",
+                                                                ctx: context);
+                                                          }
+                                                          // Navigator.pop(context);
+
+                                                          setState(() {
+                                                            loaded = true;
+                                                          });
+                                                        }
+                                                      }
+                                                    },
+                                                    child: Text("Search")),
+                                                SizedBox(height: 10),
+
+                                                // record.isEmpty?SizedBox(width:1):
+                                                record["code"] == 200
+                                                    ? ListTile(
+                                                        onTap: () {
+                                                          Map<String, dynamic>
+                                                              x =
+                                                              (record["patient"]
+                                                                      [0])
+                                                                  as Map<String,
+                                                                      dynamic>;
+                                                          String villagename =
+                                                              x["village"]
+                                                                  ["name"];
+                                                          // x.remove('village');
+                                                          // print(json.encode(x));
+                                                          Patient p =
+                                                              patientFromJson(
+                                                                  json.encode(
+                                                                      x));
+
+                                                          Navigator.pop(
+                                                              context);
+                                                          record.clear();
+                                                          Navigator.push(
+                                                              context,
+                                                              CupertinoPageRoute(
+                                                                  builder: (context) =>
+                                                                      UpdatePatient(
+                                                                          p,
+                                                                          villagename)));
+                                                        },
+                                                        leading:
+                                                            Icon(Icons.person),
+                                                        trailing: Text(
+                                                          record["patient"][0][
+                                                                      "village"]
+                                                                  ["name"]
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                        iconColor: Colors.white,
+                                                        tileColor: Colors.blue,
+                                                        title: Text(
+                                                          record["patient"][0]
+                                                                  ["name"]
+                                                              .toString()
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      )
+                                                    : Text(record["msg"] ?? "")
+                                              ],
+                                            );
+                                          }),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              })
+                        },
+                    icon: Icon(Icons.search)),
                 IconButton(
                     onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
               ],
@@ -240,122 +372,12 @@ class _HomescreenState extends State<Homescreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SizedBox(
-                                  height: 400,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Column(
-                                      children: [
-                                        Text("Search"),
-                                        Form(
-                                            key: _formkey,
-                                            child: StatefulBuilder(builder:
-                                          (context, StateSetter setState) {
-                                            return Column(
-                                              children: [
-                                                TextFormField(
-                                                  controller: SearchController,
-                                                  decoration: InputDecoration(
-                                                      labelText:
-                                                          "Enter Mobile / RCH ID"),
-                                                  validator: (v) {
-                                                    if (v == null || v.isEmpty) {
-                                                      return "Enter Search Value";
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CupertinoButton(
-                                                    color: Colors.blue,
-                                                    onPressed: () async {
-                                                      if (_formkey.currentState!
-                                                          .validate()) {
-                                                        if (SearchController.text.length >0) {
-                                                          final data =
-                                                              SearchController
-                                                                  .text
-                                                                  .trim();
-                                                          
-                                                          
-                              
-                                                          var res =await searchRCHorMobile(data);
-                                                          if(res.isNotEmpty){
-                                                            SearchController.clear();
-                                                            
-                                                          }else{
-                                                            maketoast(msg: "No Record Found", ctx: context);
-                                                          }
-                                                          // Navigator.pop(context);
-                                                           
-                                                          
-                                                          setState(() {
-                                                            loaded = true;
-                                                          }); 
-                                                           
-                                                         
-                              
-                              
-                                                        }
-                                                      }
-                                                    },
-                                                    child: Text("Search")),
-                                                    SizedBox(height: 10),
-                                                    
-                                                    // record.isEmpty?SizedBox(width:1):
-                                                      record["code"]==200?
-                                                      ListTile(
-                                                        onTap: (){
 
-                                                          Map<String,dynamic>  x=(record["patient"][0]) as Map<String,dynamic> ;
-                                                          String villagename=x["village"]["name"];
-                                                          // x.remove('village');
-                                                          // print(json.encode(x));
-                                                          Patient p=patientFromJson(json.encode(x));
-
-                                                          Navigator.pop(context);
-                                                          record.clear();
-                                                          Navigator.push(context,CupertinoPageRoute(builder:(context)=>UpdatePatient(p,villagename)));
-                                                        },
-                                                        leading: Icon(Icons.person),
-                                                        trailing: Text(record["patient"][0]["village"]["name"].toString(),style: TextStyle(color: Colors.white),),
-                                                        iconColor: Colors.white,
-                                                        tileColor: Colors.blue,
-                                                        title:Text(record["patient"][0]["name"].toString().toUpperCase(),style: TextStyle(color: Colors.white),) ,
-                                                      )
-                                                    :
-                                                    Text(record["msg"]??"")
-                                                    
-                                              ],
-                                            );}
-                                            ),
-                                            )
-                                      ],
-                                    ),
-                                  ),
-                                
-                              );
-                            });
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Updatescreen()));
                       },
                       child: btncard(Icons.edit_calendar, "Update Patient"),
                     ),
-                    //  InkWell(
-                    //   onTap: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) =>
-                    //             AddNewPatient(_distcode, _blockcode),
-                    //       ),
-                    //     );
-                    //   },
-                    //   child: btncard(Icons.person_add, "Add Patient"),
-                    // ),
+
                   ],
                 ),
               ],
@@ -363,4 +385,3 @@ class _HomescreenState extends State<Homescreen> {
           );
   }
 }
-

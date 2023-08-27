@@ -124,13 +124,17 @@ class _VerifyotpState extends State<Verifyotp> {
           SizedBox(
             height: 20,
           ),
-          Button(context, loading ? "Verifying..." : "Verify OTP",
-              () => verifyotp()),
-          loading
-              ? CircularProgressIndicator(
-                  color: Colors.blue,
-                )
-              : SizedBox(height: 0),
+          TextButton(
+            onPressed: verifyotp,
+            child: Text('Looks like a FlatButton'),
+          )
+        //   Button(context, loading ? "Verifying..." : "Verify OTP",
+        //       () => verifyotp()),
+        //   loading
+        //       ? CircularProgressIndicator(
+        //           color: Colors.blue,
+        //         )
+        //       : SizedBox(height: 0),
         ]),
       ),
     );

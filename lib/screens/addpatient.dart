@@ -576,7 +576,8 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                 }),
                               ),
                             ),
-                            Center(child: Button(context, "Submit", checkdata)),
+                            Center(child: TextButton(child: Text("Submit"),onPressed: checkdata,),),
+                            // Center(child: Button(context, "Submit", checkdata)),
                             SizedBox(
                               height: 10,
                             ),
