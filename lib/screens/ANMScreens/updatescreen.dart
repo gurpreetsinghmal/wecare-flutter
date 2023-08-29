@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:wecare/reusables.dart';
 import 'package:wecare/screens/ANMScreens/PatientANM.dart';
 
 class Updatescreen extends StatefulWidget {
-  const Updatescreen({Key? key}) : super(key: key);
+  final id;
+  const Updatescreen( this.id,{Key? key}) : super(key: key);
 
   @override
   State<Updatescreen> createState() => _UpdatescreenState();
@@ -392,14 +396,14 @@ class _UpdatescreenState extends State<Updatescreen> {
                         child: TextButton(
                             child: Text("Submit",style: TextStyle(color: Colors.white),),
                             onPressed: () async {
-                              // if (_formKey.currentState!.validate()) {
+                               // if (_formKey.currentState!.validate()) {
                                 _formKey.currentState!.save();
 
                               var input= {
-                                "id":2,
-                                "access_token":111,
-                                "rchid":int.parse(RCHID),
-                                "tt1switch": int.parse(TT1),
+                                "id":widget.id,
+                                "access_token":FirebaseAuth.instance.currentUser!.uid,
+                                "rchid":RCHID,
+                                "tt1switch": TT1,
                                 "tt2switch": TT2,
                                 "ttbswitch": TTB,
                                 // "gdmo_id": null,
@@ -478,11 +482,19 @@ class _UpdatescreenState extends State<Updatescreen> {
                                 body: jsonEncode(input),
                               );
 
-                              print(response.body);
-                              
+                              var res=jsonDecode(response.body);
+                              if(res["code"]==200){
+                                makeSuccesstoast(msg:res["msg"] , ctx: context);
+                                Navigator.pop(context);
+                              }
+                              else
+                                {
+                                  maketoast(msg:res["msg"] , ctx: context);
+                                }
 
-                              // }
-                            },
+                               }
+                            // }
+                            ,
                             style: TextButton.styleFrom(
                                 backgroundColor: Colors.blue
                             )

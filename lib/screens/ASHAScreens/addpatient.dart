@@ -56,18 +56,29 @@ class _AddNewPatientState extends State<AddNewPatient> {
 
   var patient = {};
 
-  getvillagelist() async {
-    var url = Uri.https('vcare.aims.96.lt', '/api/getvillagelist',
-        {'district': widget.dist, 'block': widget.block});
+  Future<void> getvillagelist() async {
+    try {
+      final token = FirebaseAuth.instance.currentUser!.uid;
+      var url = Uri.https(
+          'vcare.aims.96.lt', '/api/getAshaProfile', {'access_token': token});
 
-    final res = await http.get(url);
-    if (res.statusCode == 200) {
-      var jsonData = json.decode(res.body);
-      setState(() {
-        villagedata = jsonData;
-      });
-    } else {
-      maketoast(msg: "api error", ctx: context);
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse.containsKey("code")) {
+          maketoast(msg: jsonResponse["msg"], ctx: context);
+        } else if (jsonResponse.containsKey("id")) {
+          Map<String, dynamic>? village = jsonResponse["villages"];
+          villagedata=[];
+          village!.forEach((key, value) {
+            var data = {"key": key, "value": value.toString()};
+            villagedata.add(data);
+          });
+          setState(() {});
+        }
+      } else {}
+    } catch (e) {
+      maketoast(msg: "api error:${e.toString()}", ctx: context);
     }
   }
 
@@ -213,17 +224,15 @@ class _AddNewPatientState extends State<AddNewPatient> {
                             DropdownButtonFormField(
                               decoration: getinputstyle(hint: "Choose village"),
                               hint: Text("Choose Patient Village"),
-                              items: villagedata.map((item) {
+                              items: villagedata!.map((item) {
                                 return DropdownMenuItem(
-                                  value: item['village_id'].toString(),
-                                  child:
-                                      Text(item["village"]["name"].toString()),
+                                  value: item["key"],
+                                  child: Text(item["value"].toString()),
                                 );
                               }).toList(),
                               onChanged: (newVal) {
                                 setState(() {
                                   villagevalue = newVal.toString();
-                                  print(villagevalue);
                                 });
                               },
                               value: villagevalue,
@@ -285,149 +294,162 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                               return AlertDialog(
                                                 title: Text(
                                                     "Information about Previous Delivery"),
-                                                content: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          "Current Delivery Count"),
-                                                      TextFormField(
-                                                        controller:
-                                                            devliverycountController,
-                                                        maxLength: 1,
-                                                        inputFormatters: <TextInputFormatter>[
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[0-9]')),
-                                                        ],
-                                                        decoration: getinputstyle(
-                                                            hint:
-                                                                "Enter Delivery Count"),
-                                                        validator: (v) {
-                                                          if (v == null ||
-                                                              v.isEmpty) {
-                                                            return "Enter valid Delivery Count";
-                                                          } else if (v == "0" ||
-                                                              v == "1") {
-                                                            return "Current Delivery count must be greater than 1";
-                                                          }
+                                                content: SingleChildScrollView(
+                                                  child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            "Current Delivery Count"),
+                                                        TextFormField(
+                                                          controller:
+                                                              devliverycountController,
+                                                          maxLength: 1,
+                                                          inputFormatters: <TextInputFormatter>[
+                                                            FilteringTextInputFormatter
+                                                                .allow(RegExp(
+                                                                    r'[0-9]')),
+                                                          ],
+                                                          decoration: getinputstyle(
+                                                              hint:
+                                                                  "Enter Delivery Count"),
+                                                          validator: (v) {
+                                                            if (v == null ||
+                                                                v.isEmpty) {
+                                                              return "Enter valid Delivery Count";
+                                                            } else if (v ==
+                                                                    "0" ||
+                                                                v == "1") {
+                                                              return "Current Delivery count must be greater than 1";
+                                                            }
 
-                                                          return null;
-                                                        },
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                          "Age of Previous Child"),
-                                                      TextFormField(
-                                                        controller:
-                                                            prevageController,
-                                                        maxLength: 2,
-                                                        inputFormatters: <TextInputFormatter>[
-                                                          FilteringTextInputFormatter
-                                                              .allow(RegExp(
-                                                                  r'[0-9]')),
-                                                        ],
-                                                        decoration: getinputstyle(
-                                                            hint:
-                                                                "Enter Age of Previous Child"),
-                                                        validator: (v) {
-                                                          if (v == null ||
-                                                              v.isEmpty) {
-                                                            return "Enter Age of Previous Child";
-                                                          }
-                                                          if (int.parse(
-                                                                  prevageController
-                                                                      .text) <
-                                                              1) {
-                                                            return "Enter valid age";
-                                                          }
+                                                            return null;
+                                                          },
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                            "Age of Previous Child"),
+                                                        TextFormField(
+                                                          controller:
+                                                              prevageController,
+                                                          maxLength: 2,
+                                                          inputFormatters: <TextInputFormatter>[
+                                                            FilteringTextInputFormatter
+                                                                .allow(RegExp(
+                                                                    r'[0-9]')),
+                                                          ],
+                                                          decoration: getinputstyle(
+                                                              hint:
+                                                                  "Enter Age of Previous Child"),
+                                                          validator: (v) {
+                                                            if (v == null ||
+                                                                v.isEmpty) {
+                                                              return "Enter Age of Previous Child";
+                                                            }
+                                                            if (int.parse(
+                                                                    prevageController
+                                                                        .text) <
+                                                                1) {
+                                                              return "Enter valid age";
+                                                            }
 
-                                                          return null;
-                                                        },
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                          "Previous Delivery Type"),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      DropdownButtonFormField(
-                                                        decoration: getinputstyle(
-                                                            hint:
-                                                                "Previous Delivery Type"),
-                                                        hint: Text("Select"),
-                                                        items: deliverychoices
-                                                            .map((item) {
-                                                          return DropdownMenuItem(
-                                                            value: item['val']
-                                                                .toString(),
-                                                            child: Text(item[
-                                                                    "text"]
-                                                                .toString()),
-                                                          );
-                                                        }).toList(),
-                                                        value: prevdeliverytype,
-                                                        validator: (v) {
-                                                          if (v == null) {
-                                                            return "Please choose previous delivery type";
-                                                          }
-                                                          prevdeliverytype = v;
-                                                          return null;
-                                                        },
-                                                        onChanged: (v) {},
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Text(
-                                                          "Gender of Previous Child"),
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                                RadioListTile(
-                                                                    title: Text(
-                                                                        "Male"),
-                                                                    value: "M",
-                                                                    groupValue:
-                                                                        patient["sexPreviousChild"] ??
-                                                                            sex,
-                                                                    onChanged:
-                                                                        (v) {
-                                                                      setState(
-                                                                          () {
-                                                                        sex = v
-                                                                            .toString();
-                                                                      });
-                                                                    }),
-                                                          ),
-                                                          Expanded(
-                                                            child:
-                                                                RadioListTile(
-                                                                    title: Text(
-                                                                        "Female"),
-                                                                    value: "F",
-                                                                    groupValue:
-                                                                        patient["sexPreviousChild"] ??
-                                                                            sex,
-                                                                    onChanged:
-                                                                        (v) {
-                                                                      setState(
-                                                                          () {
-                                                                        sex = v
-                                                                            .toString();
-                                                                      });
-                                                                    }),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                    ]),
+                                                            return null;
+                                                          },
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                            "Previous Delivery Type"),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        DropdownButtonFormField(
+                                                          decoration: getinputstyle(
+                                                              hint:
+                                                                  "Previous Delivery Type"),
+                                                          hint: Text("Select"),
+                                                          items: deliverychoices
+                                                              .map((item) {
+                                                            return DropdownMenuItem(
+                                                              value: item['val']
+                                                                  .toString(),
+                                                              child: Text(item[
+                                                                      "text"]
+                                                                  .toString()),
+                                                            );
+                                                          }).toList(),
+                                                          value:
+                                                              prevdeliverytype,
+                                                          validator: (v) {
+                                                            if (v == null) {
+                                                              return "Please choose previous delivery type";
+                                                            }
+                                                            prevdeliverytype =
+                                                                v;
+                                                            return null;
+                                                          },
+                                                          onChanged: (v) {},
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        Text(
+                                                            "Gender of Previous Child"),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child:
+                                                                  RadioListTile(
+                                                                      contentPadding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              0.0),
+                                                                      title: Text(
+                                                                          "Male"),
+                                                                      value:
+                                                                          "M",
+                                                                      groupValue:
+                                                                          patient["sexPreviousChild"] ??
+                                                                              sex,
+                                                                      onChanged:
+                                                                          (v) {
+                                                                        setState(
+                                                                            () {
+                                                                          sex =
+                                                                              v.toString();
+                                                                        });
+                                                                      }),
+                                                            ),
+                                                            Expanded(
+                                                              child:
+                                                                  RadioListTile(
+                                                                      contentPadding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                          0.0),
+                                                                      title: Text(
+                                                                          "Female"),
+                                                                      value:
+                                                                          "F",
+                                                                      groupValue:
+                                                                          patient["sexPreviousChild"] ??
+                                                                              sex,
+                                                                      onChanged:
+                                                                          (v) {
+                                                                        setState(
+                                                                            () {
+                                                                          sex =
+                                                                              v.toString();
+                                                                        });
+                                                                      }),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ]),
+                                                ),
                                                 actions: [
                                                   Button(context, "Ok", () {
                                                     if (_formkey2.currentState!
@@ -576,7 +598,12 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                 }),
                               ),
                             ),
-                            Center(child: TextButton(child: Text("Submit"),onPressed: checkdata,),),
+                            Center(
+                              child: TextButton(
+                                child: Text("Submit"),
+                                onPressed: checkdata,
+                              ),
+                            ),
                             // Center(child: Button(context, "Submit", checkdata)),
                             SizedBox(
                               height: 10,

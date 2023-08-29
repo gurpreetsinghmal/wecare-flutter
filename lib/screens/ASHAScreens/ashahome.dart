@@ -8,31 +8,34 @@ import 'package:wecare/models/patient.dart';
 import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/screens/addpatient.dart';
-import 'package:wecare/screens/updatepatient.dart';
+import 'package:wecare/screens/ASHAScreens/addpatient.dart';
+import 'package:wecare/screens/ASHAScreens/updatepatient.dart';
 
-import 'ANMScreens/updatescreen.dart';
+import '../ANMScreens/updatescreen.dart';
 
-class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+class ASHAHomescreen extends StatefulWidget {
+  const ASHAHomescreen({super.key});
 
   @override
-  State<Homescreen> createState() => _HomescreenState();
+  State<ASHAHomescreen> createState() => _HomescreenState();
 }
 
-class _HomescreenState extends State<Homescreen> {
+class _HomescreenState extends State<ASHAHomescreen> {
   String _name = "";
   String _mobile = "";
   String _role = "";
   String _district = "";
   String _distcode = "";
   String _block = "";
+  String _anm = "";
   String _blockcode = "";
-  String _village = "";
+  Map<String, dynamic>? village;
   String _profileimg = "";
   int _index = 0;
   Map<String, dynamic> record = {};
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Future<Map<String, dynamic>> searchRCHorMobile(mob) async {
     var url = Uri.https('vcare.aims.96.lt', '/api/searchpatient');
@@ -52,8 +55,8 @@ class _HomescreenState extends State<Homescreen> {
   Future<void> getdata() async {
     try {
       final token = FirebaseAuth.instance.currentUser!.uid;
-      var url =
-          Uri.https('vcare.aims.96.lt', '/api/data', {'access_token': token});
+      var url = Uri.https(
+          'vcare.aims.96.lt', '/api/getAshaProfile', {'access_token': token});
 
       var response = await http.get(url);
       if (response.statusCode == 200) {
@@ -64,11 +67,12 @@ class _HomescreenState extends State<Homescreen> {
           _name = jsonResponse["name"];
           _mobile = jsonResponse["mobile"];
           _role = jsonResponse["role"] ?? "NA";
-          _district = jsonResponse["district"] ?? "NA";
+          _district = jsonResponse["dist_name"] ?? "NA";
           _distcode = jsonResponse["dist_code"].toString();
-          _block = jsonResponse["block"] ?? "NA";
+          _block = jsonResponse["block_name"] ?? "NA";
           _blockcode = jsonResponse["block_code"].toString();
-          _village = jsonResponse["village"] ?? "NA";
+          _anm = jsonResponse["anm"] ?? "NA";
+          village = jsonResponse["villages"];
           _profileimg = jsonResponse["photo"];
         }
       } else {}
@@ -108,6 +112,7 @@ class _HomescreenState extends State<Homescreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return !loaded
         ? Center(
             child: CircularProgressIndicator(
@@ -115,6 +120,7 @@ class _HomescreenState extends State<Homescreen> {
             ),
           )
         : Scaffold(
+            key: _scaffoldKey,
             drawer: Drawer(
               child: ListView(
                 children: [
@@ -167,12 +173,27 @@ class _HomescreenState extends State<Homescreen> {
                       }),
                     ),
                   ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(_anm),
+                    subtitle: Text("Reporting ANM"),
+                  ),
+                  Divider(),
+                  ListTile(title: Text("Coverage Area"),),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: village!.values.toList().length,
+                      itemBuilder:(context,i){
+                          return ListTile(
+                              leading: Icon(Icons.map_rounded),
+                              title:Text(village!.values.toList()[0]));
+                      })
                 ],
               ),
             ),
             appBar: AppBar(
               backgroundColor: Colors.blue,
-              title: Text("Home"),
+              title: Text("Dashboard"),
               actions: [
                 IconButton(
                     onPressed: () => {
@@ -325,6 +346,12 @@ class _HomescreenState extends State<Homescreen> {
               onTap: (i) {
                 setState(() {
                   _index = i;
+                  if(_index==1){
+                    _scaffoldKey.currentState!.openDrawer();
+                  }
+                  else{
+                    _scaffoldKey.currentState!.closeDrawer();
+                  }
                 });
               },
             ),
@@ -364,7 +391,7 @@ class _HomescreenState extends State<Homescreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                AddNewPatient(_distcode, _blockcode),
+                                AddNewPatient(_distcode.toString(), _blockcode.toString()),
                           ),
                         );
                       },
@@ -373,11 +400,142 @@ class _HomescreenState extends State<Homescreen> {
                     InkWell(
                       onTap: () {
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Updatescreen()));
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SizedBox(
+                                  height: 400,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(18.0),
+                                    child: Column(
+                                      children: [
+                                        Text("Search"),
+                                        Form(
+                                          key: _formkey,
+                                          child: StatefulBuilder(builder:
+                                              (context, StateSetter setState) {
+                                            return Column(
+                                              children: [
+                                                TextFormField(
+                                                  controller: SearchController,
+                                                  decoration: InputDecoration(
+                                                      labelText:
+                                                      "Enter Mobile / RCH ID"),
+                                                  validator: (v) {
+                                                    if (v == null ||
+                                                        v.isEmpty) {
+                                                      return "Enter Search Value";
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                CupertinoButton(
+                                                    color: Colors.blue,
+                                                    onPressed: () async {
+                                                      if (_formkey.currentState!
+                                                          .validate()) {
+                                                        if (SearchController
+                                                            .text.length >
+                                                            0) {
+                                                          final data =
+                                                          SearchController
+                                                              .text
+                                                              .trim();
+
+                                                          var res =
+                                                          await searchRCHorMobile(
+                                                              data);
+                                                          if (res.isNotEmpty) {
+                                                            SearchController
+                                                                .clear();
+                                                          } else {
+                                                            maketoast(
+                                                                msg:
+                                                                "No Record Found",
+                                                                ctx: context);
+                                                          }
+                                                          // Navigator.pop(context);
+
+                                                          setState(() {
+                                                            loaded = true;
+                                                          });
+                                                        }
+                                                      }
+                                                    },
+                                                    child: Text("Search")),
+                                                SizedBox(height: 10),
+
+                                                // record.isEmpty?SizedBox(width:1):
+                                                record["code"] == 200
+                                                    ? ListTile(
+                                                  onTap: () {
+                                                    Map<String, dynamic>
+                                                    x =
+                                                    (record["patient"]
+                                                    [0])
+                                                    as Map<String,
+                                                        dynamic>;
+                                                    String villagename =
+                                                    x["village"]
+                                                    ["name"];
+                                                    // x.remove('village');
+                                                    // print(json.encode(x));
+                                                    Patient p =
+                                                    patientFromJson(
+                                                        json.encode(
+                                                            x));
+
+                                                    Navigator.pop(
+                                                        context);
+                                                    record.clear();
+                                                    Navigator.push(
+                                                        context,
+                                                        CupertinoPageRoute(
+                                                            builder: (context) =>
+                                                                UpdatePatient(
+                                                                    p,
+                                                                    villagename)));
+                                                  },
+                                                  leading:
+                                                  Icon(Icons.person),
+                                                  trailing: Text(
+                                                    record["patient"][0][
+                                                    "village"]
+                                                    ["name"]
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color:
+                                                        Colors.white),
+                                                  ),
+                                                  iconColor: Colors.white,
+                                                  tileColor: Colors.blue,
+                                                  title: Text(
+                                                    record["patient"][0]
+                                                    ["name"]
+                                                        .toString()
+                                                        .toUpperCase(),
+                                                    style: TextStyle(
+                                                        color:
+                                                        Colors.white),
+                                                  ),
+                                                )
+                                                    : Text(record["msg"] ?? "")
+                                              ],
+                                            );
+                                          }),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
+
                       },
                       child: btncard(Icons.edit_calendar, "Update Patient"),
                     ),
-
                   ],
                 ),
               ],

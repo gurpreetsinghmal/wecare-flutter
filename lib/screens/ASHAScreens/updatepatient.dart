@@ -260,9 +260,9 @@ class _UpdatePatientState extends State<UpdatePatient> {
   Future<String?> postUpdatePatient(String d) async {
     Map<String, dynamic> json;
     try {
-      var url = Uri.https('vcare.aims.96.lt', '/api/updatepatient');
+      var url = Uri.https('vcare.aims.96.lt', '/api/ashaupdatepatient');
       Map<String, dynamic> data = jsonDecode(d);
-
+      print(data);
       var response = await http.post(url, body: data);
 
       if (response.statusCode == 200) {

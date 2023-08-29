@@ -4,11 +4,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wecare/screens/homescreen.dart';
+import 'package:wecare/phone_auth/signin.dart';
+import 'package:wecare/screens/ANMScreens/anmhome.dart';
+import 'package:wecare/screens/ASHAScreens/ashahome.dart';
 import 'package:http/http.dart' as http;
 
 import '../reusables.dart';
-
+class User {
+  final String name;
+  final int roleId;
+  User({required this.name, required this.roleId});
+}
 class Verifyotp extends StatefulWidget {
   final String verificationId;
   const Verifyotp({super.key, required this.verificationId});
@@ -18,6 +24,8 @@ class Verifyotp extends StatefulWidget {
 }
 
 class _VerifyotpState extends State<Verifyotp> {
+  late User user;
+
   TextEditingController otpcontroller = TextEditingController();
   bool loading = false;
 
@@ -41,13 +49,9 @@ class _VerifyotpState extends State<Verifyotp> {
 
       if (userCredential.user != null) {
         await createAccessToken(userCredential);
-        Navigator.popUntil(context, (route) => route.isFirst);
-        Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => Homescreen(),
-          ),
-        );
+
+        fetchData();
+
       }
     } on FirebaseAuthException catch (ex) {
       String e = ex.code.toString();
@@ -55,6 +59,49 @@ class _VerifyotpState extends State<Verifyotp> {
       setState(() {
         loading = false;
       });
+    }
+  }
+
+  void navigateToNextScreen(int roleId) {
+    Widget nextScreen;
+
+    if (roleId == 1) {
+      nextScreen = ASHAHomescreen();
+    } else if (roleId == 2) {
+      nextScreen = ANMHomescreen();
+    } else {
+      maketoast(msg: "No Role Assigned", ctx: context);
+      return;
+    }
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+    nextScreen), (Route<dynamic> route) => false);
+  }
+
+  void fetchData() async {
+    await Future.delayed(Duration(seconds: 3));
+    final userUid = FirebaseAuth.instance.currentUser?.uid;
+    if (userUid != null) {
+      // Fetch access_token using userUid from your database or Firebase
+      final access_token = userUid;
+
+      final response = await http.get(Uri.parse(
+          'https://vcare.aims.96.lt/api/getUserRole?access_token=$access_token'));
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final userJson = jsonData['user'];
+        user = User(
+          name: userJson['name'],
+          roleId: userJson['role_id'],
+        );
+        navigateToNextScreen(user.roleId);
+      } else {
+        maketoast(msg: "Server down", ctx: context);
+      }
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const Loginscreen()),
+      );
     }
   }
 
@@ -116,6 +163,7 @@ class _VerifyotpState extends State<Verifyotp> {
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
+              keyboardType: TextInputType.phone,
               controller: otpcontroller,
               decoration: getinputstyle(hint: "Enter 6 Digit OTP"),
               maxLength: 6,
@@ -124,17 +172,17 @@ class _VerifyotpState extends State<Verifyotp> {
           SizedBox(
             height: 20,
           ),
-          TextButton(
-            onPressed: verifyotp,
-            child: Text('Looks like a FlatButton'),
-          )
-        //   Button(context, loading ? "Verifying..." : "Verify OTP",
-        //       () => verifyotp()),
-        //   loading
-        //       ? CircularProgressIndicator(
-        //           color: Colors.blue,
-        //         )
-        //       : SizedBox(height: 0),
+          // TextButton(
+          //   onPressed: verifyotp,
+          //   child: Text('Looks like a FlatButton'),
+          // )
+          Button(context, loading ? "Verifying..." : "Verify OTP",
+              () => verifyotp()),
+          loading
+              ? CircularProgressIndicator(
+                  color: Colors.blue,
+                )
+              : SizedBox(height: 0),
         ]),
       ),
     );

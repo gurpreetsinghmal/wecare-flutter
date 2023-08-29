@@ -17,6 +17,7 @@ class Loginscreen extends StatefulWidget {
 }
 
 class _LoginscreenState extends State<Loginscreen> {
+
   TextEditingController phonecontroller = TextEditingController();
   bool _c = false;
   bool loading = false;
@@ -101,46 +102,45 @@ class _LoginscreenState extends State<Loginscreen> {
 
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
-    double h = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
+          height: MediaQuery.of(context).size.height,
           color: Colors.grey[200],
-          child: Stack(
+          child:
+          Stack(
             children: [
               Container(
                 alignment: Alignment.topLeft,
-                width: w,
-                height: h * 0.4,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height / 2,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      MediaQuery.of(context).size.width * 0.1,
-                      MediaQuery.of(context).size.height * 0.17,
-                      0,
-                      50),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height / 8,
+                      horizontal: 20.0),
                   child: Text(
                     'Login',
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 40,
+                        fontSize: 40.0,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 decoration: BoxDecoration(color: Colors.blueAccent),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(
-                    MediaQuery.of(context).size.width * 0.08,
-                    MediaQuery.of(context).size.height * 0.3,
-                    MediaQuery.of(context).size.width * 0.08,
-                    MediaQuery.of(context).size.height * 0.3),
+                padding: EdgeInsets.symmetric(
+                     vertical: MediaQuery.of(context).size.height / 4.5,
+                    horizontal: 20.0),
                 child: Container(
                   alignment: Alignment.topLeft,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
                     color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(color: Colors.black, blurRadius: 10.0)
+                    ],
                   ),
                   child: Column(
                     children: [
@@ -158,24 +158,24 @@ class _LoginscreenState extends State<Loginscreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 0),
                       Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextFormField(
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 3),
-                            controller: phonecontroller,
-                            maxLength: 10,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9]')),
-                            ],
-                            onChanged: (v) => setState(() {}),
-                            decoration:
-                                getinputstyle(hint: "Enter Mobile Number"),
-                          )),
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 3),
+                          controller: phonecontroller,
+                          maxLength: 10,
+                          keyboardType: TextInputType.phone,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          ],
+                          onChanged: (v) => setState(() {}),
+                          decoration:
+                              getinputstyle(hint: "Enter Mobile Number"),
+                        ),
+                      ),
                       SizedBox(height: 20),
                       ListTile(
                         leading: Checkbox(
@@ -196,13 +196,13 @@ class _LoginscreenState extends State<Loginscreen> {
                         ),
                       ),
                       SizedBox(height: 30),
-                      TextButton(
-
-                        onPressed: sendotp,
-                        child: Text('Looks like a FlatButton'),
-                      ),
-                      // Button(context, loading ? "Sending..." : "Send OTP",
-                      //     sendotp),
+                      // TextButton(
+                      //
+                      //   onPressed: sendotp,
+                      //   child: Text('Looks like a FlatButton'),
+                      // ),
+                      Button(context, loading ? "Sending..." : "Send OTP",
+                          sendotp),
                       loading
                           ? CircularProgressIndicator(
                               color: Colors.blue,
