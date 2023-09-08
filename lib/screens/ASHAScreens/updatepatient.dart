@@ -46,7 +46,6 @@ class _UpdatePatientState extends State<UpdatePatient> {
       tt2switch=newdata!.tt2switch==null?false:true;
       ttbswitch=newdata!.ttbswitch==null?false:true;
       counsDiet=newdata!.counsDiet==null?false:true;
-      print(newdata);
     });
 
   }
@@ -251,7 +250,7 @@ class _UpdatePatientState extends State<UpdatePatient> {
       });
       if (s != null) {
         
-        makeSuccesstoast(msg: s ?? "Null", ctx: context);
+        makeSuccesstoast(msg: s, ctx: context);
         Navigator.of(context).pop();
       }
     }

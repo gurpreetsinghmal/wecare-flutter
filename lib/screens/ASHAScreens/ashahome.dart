@@ -11,7 +11,6 @@ import 'package:http/http.dart' as http;
 import 'package:wecare/screens/ASHAScreens/addpatient.dart';
 import 'package:wecare/screens/ASHAScreens/updatepatient.dart';
 
-import '../ANMScreens/updatepersonal.dart';
 
 class ASHAHomescreen extends StatefulWidget {
   const ASHAHomescreen({super.key});
@@ -33,8 +32,8 @@ class _HomescreenState extends State<ASHAHomescreen> {
   String _profileimg = "";
   int _index = 0;
   Map<String, dynamic> record = {};
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  List<Patient> listpats = [];
+  List<String> listvnames = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Future<Map<String, dynamic>> searchRCHorMobile(mob) async {
@@ -45,6 +44,17 @@ class _HomescreenState extends State<ASHAHomescreen> {
       var jsonData = json.decode(res.body);
 
       record = jsonData;
+
+      listpats.clear();
+      listvnames.clear();
+      if (record["patient"] != null) {
+        for (int k = 0; k < record["patient"].length; k++) {
+          var p = Patient.fromJson(record["patient"][k]);
+          listpats.add(p);
+          String v = record["patient"][k]["village"]["name"];
+          listvnames.add(v);
+        }
+      }
     } else {
       record = {"code": "500", "msg": "api error"};
     }
@@ -195,146 +205,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
               backgroundColor: Colors.blue,
               title: Text("Dashboard"),
               actions: [
-                IconButton(
-                    onPressed: () => {
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 400,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Column(
-                                      children: [
-                                        Text("Search"),
-                                        Form(
-                                          key: _formkey,
-                                          child: StatefulBuilder(builder:
-                                              (context, StateSetter setState) {
-                                            return Column(
-                                              children: [
-                                                TextFormField(
-                                                  controller: SearchController,
-                                                  decoration: InputDecoration(
-                                                      labelText:
-                                                          "Enter Mobile / RCH ID"),
-                                                  validator: (v) {
-                                                    if (v == null ||
-                                                        v.isEmpty) {
-                                                      return "Enter Search Value";
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CupertinoButton(
-                                                    color: Colors.blue,
-                                                    onPressed: () async {
-                                                      if (_formkey.currentState!
-                                                          .validate()) {
-                                                        if (SearchController
-                                                                .text.length >
-                                                            0) {
-                                                          final data =
-                                                              SearchController
-                                                                  .text
-                                                                  .trim();
-
-                                                          var res =
-                                                              await searchRCHorMobile(
-                                                                  data);
-                                                          if (res.isNotEmpty) {
-                                                            SearchController
-                                                                .clear();
-                                                          } else {
-                                                            maketoast(
-                                                                msg:
-                                                                    "No Record Found",
-                                                                ctx: context);
-                                                          }
-                                                          // Navigator.pop(context);
-
-                                                          setState(() {
-                                                            loaded = true;
-                                                          });
-                                                        }
-                                                      }
-                                                    },
-                                                    child: Text("Search")),
-                                                SizedBox(height: 10),
-
-                                                // record.isEmpty?SizedBox(width:1):
-                                                record["code"] == 200
-                                                    ? ListTile(
-                                                        onTap: () {
-                                                          Map<String, dynamic>
-                                                              x =
-                                                              (record["patient"]
-                                                                      [0])
-                                                                  as Map<String,
-                                                                      dynamic>;
-                                                          String villagename =
-                                                              x["village"]
-                                                                  ["name"];
-                                                          // x.remove('village');
-                                                          // print(json.encode(x));
-                                                          Patient p = Patient();
-                                                          p.name=x["name"];
-                                                          p.tt1switch=x["tt1switch"];
-                                                          p.tt2switch=x["tt2switch"];
-                                                          p.ttbswitch=x["ttbswitch"];
-                                                          p.counsDiet=x["counsDiet"];
-
-
-
-                                                          Navigator.pop(
-                                                              context);
-                                                          record.clear();
-                                                          Navigator.push(
-                                                              context,
-                                                              CupertinoPageRoute(
-                                                                  builder: (context) =>
-                                                                      UpdatePatient(
-                                                                          p,
-                                                                          villagename)));
-                                                        },
-                                                        leading:
-                                                            Icon(Icons.person),
-                                                        trailing: Text(
-                                                          record["patient"][0][
-                                                                      "village"]
-                                                                  ["name"]
-                                                              .toString(),
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                        iconColor: Colors.white,
-                                                        tileColor: Colors.blue,
-                                                        title: Text(
-                                                          record["patient"][0]
-                                                                  ["name"]
-                                                              .toString()
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      )
-                                                    : Text(record["msg"] ?? "")
-                                              ],
-                                            );
-                                          }),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              })
-                        },
-                    icon: Icon(Icons.search)),
+                IconButton(onPressed: callbottom, icon: Icon(Icons.search)),
                 IconButton(
                     onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
               ],
@@ -402,146 +273,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
                       child: btncard(Icons.person_add, "Add Patient"),
                     ),
                     InkWell(
-                      onTap: () {
-
-                          showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 400,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(18.0),
-                                    child: Column(
-                                      children: [
-                                        Text("Search"),
-                                        Form(
-                                          key: _formkey,
-                                          child: StatefulBuilder(builder:
-                                              (context, StateSetter setState) {
-                                            return Column(
-                                              children: [
-                                                TextFormField(
-                                                  controller: SearchController,
-                                                  decoration: InputDecoration(
-                                                      labelText:
-                                                      "Enter Mobile / RCH ID"),
-                                                  validator: (v) {
-                                                    if (v == null ||
-                                                        v.isEmpty) {
-                                                      return "Enter Search Value";
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 20,
-                                                ),
-                                                CupertinoButton(
-                                                    color: Colors.blue,
-                                                    onPressed: () async {
-                                                      if (_formkey.currentState!
-                                                          .validate()) {
-                                                        if (SearchController
-                                                            .text.length >
-                                                            0) {
-                                                          final data =
-                                                          SearchController
-                                                              .text
-                                                              .trim();
-
-                                                          var res =
-                                                          await searchRCHorMobile(
-                                                              data);
-                                                          if (res.isNotEmpty) {
-                                                            SearchController
-                                                                .clear();
-                                                          } else {
-                                                            maketoast(
-                                                                msg:
-                                                                "No Record Found",
-                                                                ctx: context);
-                                                          }
-                                                          // Navigator.pop(context);
-
-                                                          setState(() {
-                                                            loaded = true;
-                                                          });
-                                                        }
-                                                      }
-                                                    },
-                                                    child: Text("Search")),
-                                                SizedBox(height: 10),
-
-                                                // record.isEmpty?SizedBox(width:1):
-                                                record["code"] == 200
-                                                    ? ListTile(
-                                                  onTap: () {
-                                                    Map<String, dynamic>
-                                                    x =
-                                                    (record["patient"]
-                                                    [0])
-                                                    as Map<String,
-                                                        dynamic>;
-                                                    String villagename =
-                                                    x["village"]
-                                                    ["name"];
-                                                    // x.remove('village');
-                                                    // print(json.encode(x));
-
-                                                    Patient p = Patient();
-                                                    p.name=x["name"];
-                                                    p.tt1switch=x["tt1switch"];
-                                                    p.tt2switch=x["tt2switch"];
-                                                    p.ttbswitch=x["ttbswitch"];
-                                                    p.counsDiet=x["counsDiet"];
-
-
-                                                    Navigator.pop(
-                                                        context);
-                                                    record.clear();
-                                                    Navigator.push(
-                                                        context,
-                                                        CupertinoPageRoute(
-                                                            builder: (context) =>
-                                                                UpdatePatient(
-                                                                    p,
-                                                                    villagename)));
-                                                  },
-                                                  leading:
-                                                  Icon(Icons.person),
-                                                  trailing: Text(
-                                                    record["patient"][0][
-                                                    "village"]
-                                                    ["name"]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.white),
-                                                  ),
-                                                  iconColor: Colors.white,
-                                                  tileColor: Colors.blue,
-                                                  title: Text(
-                                                    record["patient"][0]
-                                                    ["name"]
-                                                        .toString()
-                                                        .toUpperCase(),
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.white),
-                                                  ),
-                                                )
-                                                    : Text(record["msg"] ?? "")
-                                              ],
-                                            );
-                                          }),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              });
-
-                      },
+                      onTap: callbottom,
                       child: btncard(Icons.edit_calendar, "Update Patient"),
                     ),
                   ],
@@ -549,5 +281,131 @@ class _HomescreenState extends State<ASHAHomescreen> {
               ],
             ),
           );
+  }
+  Future callbottom() {
+    listpats.clear();
+    return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          // Set the fixed height of the bottom sheet here
+          final sheetHeight = 400.0;
+
+          return Container(
+            height: sheetHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Form(
+                      key: _formkey,
+                      child: StatefulBuilder(
+                          builder: (context, StateSetter setState) {
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: TextFormField(
+                                    controller: SearchController,
+                                    decoration: InputDecoration(
+                                        labelText: "Enter Mobile / RCH ID"),
+                                    validator: (v) {
+                                      if (v == null || v.isEmpty) {
+                                        return "Enter Search Value";
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                CupertinoButton(
+                                    color: Colors.blue,
+                                    onPressed: () async {
+                                      if (_formkey.currentState!.validate()) {
+                                        if (SearchController.text.length > 0) {
+                                          final data = SearchController.text.trim();
+
+                                          var res = await searchRCHorMobile(data);
+                                          if (res.isNotEmpty) {
+                                            SearchController.clear();
+                                          } else {
+                                            maketoast(
+                                                msg: "No Record Found",
+                                                ctx: context);
+                                          }
+                                          // Navigator.pop(context);
+
+                                          setState(() {
+                                            loaded = true;
+                                          });
+                                        }
+                                      }
+                                    },
+                                    child: Text("Search")),
+                                record["code"] == 200
+                                    ? MyListViewPatient(
+                                  patients: listpats, vnames: listvnames)
+                                    : record["code"] == 404
+                                    ? Text(record["msg"])
+                                    : Text("")
+                              ],
+                            );
+                          })),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class MyListViewPatient extends StatelessWidget {
+  final List<Patient> patients;
+  final List<String> vnames;
+
+  MyListViewPatient({required this.patients, required this.vnames});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: patients.length,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors
+                  .blue[300], // Replace with your desired background color
+              borderRadius:
+              BorderRadius.circular(10.0), // Set the border radius here
+            ),
+            margin: EdgeInsets.all(3),
+            child: ListTile(
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            UpdatePatient(patients[index], vnames[index])));
+              },
+              leading: Icon(Icons.person),
+              trailing: Text(
+                vnames[index].toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+              iconColor: Colors.white,
+              textColor: Colors.white,
+              title: Text(patients[index].name.toString().toUpperCase()),
+              subtitle:
+              Text(patients[index].husbandName.toString().toUpperCase()),
+              // You can add more properties or customize ListTile as needed
+            ),
+          );
+        },
+      ),
+    );
   }
 }
