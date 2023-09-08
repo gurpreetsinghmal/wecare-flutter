@@ -8,7 +8,8 @@ import 'package:wecare/models/patient.dart';
 import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
-import '../ANMScreens/updatescreen.dart';
+import 'package:wecare/screens/ANMScreens/patientsections.dart';
+import '../ANMScreens/updatepersonal.dart';
 
 class ANMHomescreen extends StatefulWidget {
   const ANMHomescreen({super.key});
@@ -31,7 +32,9 @@ class _HomescreenState extends State<ANMHomescreen> {
   int _index = 0;
   Map<String, dynamic> record = {};
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  List<Patient> listpats = [];
+  List<String> listvnames = [];
+  List<String> listashanames = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   Future<Map<String, dynamic>> searchRCHorMobile(mob) async {
@@ -42,6 +45,21 @@ class _HomescreenState extends State<ANMHomescreen> {
       var jsonData = json.decode(res.body);
 
       record = jsonData;
+
+      listpats.clear();
+      listvnames.clear();
+      listashanames.clear();
+      if (record["patient"] != null) {
+        for (int k = 0; k < record["patient"].length; k++) {
+          var p = Patient.fromJson(record["patient"][k]);
+          listpats.add(p);
+          String v = record["patient"][k]["village"]["name"];
+          listvnames.add(v);
+          String a = record["patient"][k]["asha"]["name"];
+          listashanames.add(a);
+
+        }
+      }
     } else {
       record = {"code": "500", "msg": "api error"};
     }
@@ -72,7 +90,7 @@ class _HomescreenState extends State<ANMHomescreen> {
           _profileimg = jsonResponse["photo"];
 
           Map<String, dynamic>? a = jsonResponse["ashas"];
-          ashas=[];
+          ashas = [];
           a!.forEach((key, value) {
             var data = {"ashaid": key, "ashaname": value.toString()};
             ashas.add(data);
@@ -115,431 +133,292 @@ class _HomescreenState extends State<ANMHomescreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return !loaded
         ? Center(
-      child: CircularProgressIndicator(
-        color: Colors.blue,
-      ),
-    )
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+            ),
+          )
         : Scaffold(
-      key: _scaffoldKey,
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            Container(
-              decoration: BoxDecoration(color: Colors.blue),
-              padding: EdgeInsets.all(10),
-              child: FutureBuilder(
-                future: getdata(),
-                builder: ((context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ));
-                  } else {
-                    return Center(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircleAvatar(
-                              radius: 30,
-                              backgroundImage: NetworkImage(_profileimg),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _name,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                _mobile,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Text(
-                                _role,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                }),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text(_smo),
-              subtitle: Text("Reporting SMO"),
-            ),
-            Divider(),
-            ListTile(title: Text("Incharge of Asha's"),),
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount:ashas.length,
-                itemBuilder:(context,i){
-                  print(i);
-                  return ListTile(
-                      leading: Icon(Icons.map_rounded),
-                      title:Text(ashas[i]["ashaname"]));
-                })
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Dashboard"),
-        actions: [
-          IconButton(
-              onPressed: () => {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Column(
-                            children: [
-                              Text("Search"),
-                              Form(
-                                key: _formkey,
-                                child: StatefulBuilder(builder:
-                                    (context, StateSetter setState) {
-                                  return Column(
-                                    children: [
-                                      TextFormField(
-                                        controller: SearchController,
-                                        decoration: InputDecoration(
-                                            labelText:
-                                            "Enter Mobile / RCH ID"),
-                                        validator: (v) {
-                                          if (v == null ||
-                                              v.isEmpty) {
-                                            return "Enter Search Value";
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      CupertinoButton(
-                                          color: Colors.blue,
-                                          onPressed: () async {
-                                            if (_formkey.currentState!
-                                                .validate()) {
-                                              if (SearchController
-                                                  .text.length >
-                                                  0) {
-                                                final data =
-                                                SearchController
-                                                    .text
-                                                    .trim();
-
-                                                var res =
-                                                await searchRCHorMobile(
-                                                    data);
-                                                if (res.isNotEmpty) {
-                                                  SearchController
-                                                      .clear();
-                                                } else {
-                                                  maketoast(
-                                                      msg:
-                                                      "No Record Found",
-                                                      ctx: context);
-                                                }
-                                                // Navigator.pop(context);
-
-                                                setState(() {
-                                                  loaded = true;
-                                                });
-                                              }
-                                            }
-                                          },
-                                          child: Text("Search")),
-                                      SizedBox(height: 10),
-
-                                      // record.isEmpty?SizedBox(width:1):
-                                      record["code"] == 200
-                                          ? ListTile(
-                                        onTap: () {
-                                          Map<String, dynamic>
-                                          x =
-                                          (record["patient"]
-                                          [0])
-                                          as Map<String,
-                                              dynamic>;
-                                          String villagename =
-                                          x["village"]
-                                          ["name"];
-                                          // x.remove('village');
-                                          // print(json.encode(x));
-                                          Patient p =
-                                          patientFromJson(
-                                              json.encode(
-                                                  x));
-
-                                          Navigator.pop(
-                                              context);
-                                          record.clear();
-                                          Navigator.push(
-                                              context,
-                                              CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                  Updatescreen(x["id"]
-                                                  )));
-                                        },
-                                        leading:
-                                        Icon(Icons.person),
-                                        trailing: Text(
-                                          record["patient"][0][
-                                          "village"]
-                                          ["name"]
-                                              .toString(),
-                                          style: TextStyle(
-                                              color:
-                                              Colors.white),
-                                        ),
-                                        iconColor: Colors.white,
-                                        tileColor: Colors.blue,
-                                        title: Text(
-                                          record["patient"][0]
-                                          ["name"]
-                                              .toString()
-                                              .toUpperCase(),
-                                          style: TextStyle(
-                                              color:
-                                              Colors.white),
-                                        ),
-                                      )
-                                          : Text(record["msg"] ?? "")
-                                    ],
-                                  );
-                                }),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    })
-              },
-              icon: Icon(Icons.search)),
-          IconButton(
-              onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        selectedItemColor: Colors.blue[800],
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: "Profile"),
-        ],
-        onTap: (i) {
-          setState(() {
-            _index = i;
-            if(_index==1){
-              _scaffoldKey.currentState!.openDrawer();
-            }
-            else{
-              _scaffoldKey.currentState!.closeDrawer();
-            }
-          });
-        },
-      ),
-      body: ListView(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "District : $_district",
-                style: mytextstyle,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Block : $_block",
-                style: mytextstyle,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // InkWell(
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) =>
-              //             AddNewPatient(_distcode.toString(), _blockcode.toString()),
-              //       ),
-              //     );
-              //   },
-              //   child: btncard(Icons.person_add, "Add Patient"),
-              // ),
-              InkWell(
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SizedBox(
-                          height: 400,
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Column(
+            key: _scaffoldKey,
+            drawer: Drawer(
+              child: ListView(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(color: Colors.blue),
+                    padding: EdgeInsets.all(10),
+                    child: FutureBuilder(
+                      future: getdata(),
+                      builder: ((context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                              child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ));
+                        } else {
+                          return Center(
+                            child: Row(
                               children: [
-                                Text("Search"),
-                                Form(
-                                  key: _formkey,
-                                  child: StatefulBuilder(builder:
-                                      (context, StateSetter setState) {
-                                    return Column(
-                                      children: [
-                                        TextFormField(
-                                          controller: SearchController,
-                                          decoration: InputDecoration(
-                                              labelText:
-                                              "Enter Mobile / RCH ID"),
-                                          validator: (v) {
-                                            if (v == null ||
-                                                v.isEmpty) {
-                                              return "Enter Search Value";
-                                            }
-                                            return null;
-                                          },
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        CupertinoButton(
-                                            color: Colors.blue,
-                                            onPressed: () async {
-                                              if (_formkey.currentState!
-                                                  .validate()) {
-                                                if (SearchController
-                                                    .text.length >
-                                                    0) {
-                                                  final data =
-                                                  SearchController
-                                                      .text
-                                                      .trim();
-
-                                                  var res =
-                                                  await searchRCHorMobile(
-                                                      data);
-                                                  if (res.isNotEmpty) {
-                                                    SearchController
-                                                        .clear();
-                                                  } else {
-                                                    maketoast(
-                                                        msg:
-                                                        "No Record Found",
-                                                        ctx: context);
-                                                  }
-                                                  // Navigator.pop(context);
-
-                                                  setState(() {
-                                                    loaded = true;
-                                                  });
-                                                }
-                                              }
-                                            },
-                                            child: Text("Search")),
-                                        SizedBox(height: 10),
-
-                                        // record.isEmpty?SizedBox(width:1):
-                                        record["code"] == 200
-                                            ? ListTile(
-                                          onTap: () {
-                                            Map<String, dynamic>
-                                            x =
-                                            (record["patient"]
-                                            [0])
-                                            as Map<String,
-                                                dynamic>;
-                                            String villagename =
-                                            x["village"]
-                                            ["name"];
-                                            // x.remove('village');
-                                            // print(json.encode(x));
-                                            Patient p =
-                                            patientFromJson(
-                                                json.encode(
-                                                    x));
-
-                                            Navigator.pop(
-                                                context);
-                                            record.clear();
-                                            Navigator.push(
-                                                context,
-                                                CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        Updatescreen(x["id"]
-                                                        )));
-                                          },
-                                          leading:
-                                          Icon(Icons.person),
-                                          trailing: Text(
-                                            record["patient"][0][
-                                            "village"]
-                                            ["name"]
-                                                .toString(),
-                                            style: TextStyle(
-                                                color:
-                                                Colors.white),
-                                          ),
-                                          iconColor: Colors.white,
-                                          tileColor: Colors.blue,
-                                          title: Text(
-                                            record["patient"][0]
-                                            ["name"]
-                                                .toString()
-                                                .toUpperCase(),
-                                            style: TextStyle(
-                                                color:
-                                                Colors.white),
-                                          ),
-                                        )
-                                            : Text(record["msg"] ?? "")
-                                      ],
-                                    );
-                                  }),
-                                )
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(_profileimg),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _name,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      _mobile,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    Text(
+                                      _role,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-                          ),
-                        );
-                      });
-
-                },
-                child: btncard(Icons.edit_calendar, "Update Patient"),
+                          );
+                        }
+                      }),
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text(_smo),
+                    subtitle: Text("Reporting SMO"),
+                  ),
+                  Divider(),
+                  ListTile(
+                    title: Text("Incharge of Asha's"),
+                  ),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: ashas.length,
+                      itemBuilder: (context, i) {
+                        print(i);
+                        return ListTile(
+                            leading: Icon(Icons.map_rounded),
+                            title: Text(ashas[i]["ashaname"]));
+                      })
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+            appBar: AppBar(
+              backgroundColor: Colors.blue,
+              title: Text("Dashboard"),
+              actions: [
+                IconButton(onPressed: callbottom, icon: Icon(Icons.search)),
+                IconButton(
+                    onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _index,
+              selectedItemColor: Colors.blue[800],
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person), label: "Profile"),
+              ],
+              onTap: (i) {
+                setState(() {
+                  _index = i;
+                  if (_index == 1) {
+                    _scaffoldKey.currentState!.openDrawer();
+                  } else {
+                    _scaffoldKey.currentState!.closeDrawer();
+                  }
+                });
+              },
+            ),
+            body: ListView(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "District : $_district",
+                      style: mytextstyle,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Block : $_block",
+                      style: mytextstyle,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // InkWell(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder: (context) =>
+                    //             AddNewPatient(_distcode.toString(), _blockcode.toString()),
+                    //       ),
+                    //     );
+                    //   },
+                    //   child: btncard(Icons.person_add, "Add Patient"),
+                    // ),
+                    InkWell(
+                      onTap: callbottom,
+                      child: btncard(Icons.edit_calendar, "Update Patient"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+  }
+
+  Future callbottom() {
+    listpats.clear();
+    return showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          // Set the fixed height of the bottom sheet here
+          final sheetHeight = 400.0;
+
+          return Container(
+            height: sheetHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Form(
+                      key: _formkey,
+                      child: StatefulBuilder(
+                          builder: (context, StateSetter setState) {
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                controller: SearchController,
+                                decoration: InputDecoration(
+                                    labelText: "Enter Mobile / RCH ID"),
+                                validator: (v) {
+                                  if (v == null || v.isEmpty) {
+                                    return "Enter Search Value";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            CupertinoButton(
+                                color: Colors.blue,
+                                onPressed: () async {
+                                  if (_formkey.currentState!.validate()) {
+                                    if (SearchController.text.length > 0) {
+                                      final data = SearchController.text.trim();
+
+                                      var res = await searchRCHorMobile(data);
+                                      if (res.isNotEmpty) {
+                                        SearchController.clear();
+                                      } else {
+                                        maketoast(
+                                            msg: "No Record Found",
+                                            ctx: context);
+                                      }
+                                      // Navigator.pop(context);
+
+                                      setState(() {
+                                        loaded = true;
+                                      });
+                                    }
+                                  }
+                                },
+                                child: Text("Search")),
+                            record["code"] == 200
+                                ? MyListViewPatient(
+                                    patients: listpats, vnames: listvnames,ashanames:listashanames,)
+                                : record["code"] == 404
+                                    ? Text(record["msg"])
+                                    : Text("")
+                          ],
+                        );
+                      })),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class MyListViewPatient extends StatelessWidget {
+  final List<Patient> patients;
+  final List<String> vnames;
+  final List<String> ashanames;
+
+  MyListViewPatient({required this.patients, required this.vnames,required this.ashanames});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: patients.length,
+        itemBuilder: (context, index) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors
+                  .blue[300], // Replace with your desired background color
+              borderRadius:
+                  BorderRadius.circular(10.0), // Set the border radius here
+            ),
+            margin: EdgeInsets.all(3),
+            child: ListTile(
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            PatientSections(patients[index], vnames[index],ashanames[index])));
+              },
+              leading: Icon(Icons.person),
+              trailing: Text(
+                vnames[index].toString(),
+                style: TextStyle(color: Colors.white),
+              ),
+              iconColor: Colors.white,
+              textColor: Colors.white,
+              title: Text(patients[index].name.toString().toUpperCase()),
+              subtitle:
+                  Text(patients[index].husbandName.toString().toUpperCase()),
+              // You can add more properties or customize ListTile as needed
+            ),
+          );
+        },
       ),
     );
   }

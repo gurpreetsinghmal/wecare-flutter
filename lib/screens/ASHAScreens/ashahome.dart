@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:wecare/screens/ASHAScreens/addpatient.dart';
 import 'package:wecare/screens/ASHAScreens/updatepatient.dart';
 
-import '../ANMScreens/updatescreen.dart';
+import '../ANMScreens/updatepersonal.dart';
 
 class ASHAHomescreen extends StatefulWidget {
   const ASHAHomescreen({super.key});
@@ -280,10 +280,14 @@ class _HomescreenState extends State<ASHAHomescreen> {
                                                                   ["name"];
                                                           // x.remove('village');
                                                           // print(json.encode(x));
-                                                          Patient p =
-                                                              patientFromJson(
-                                                                  json.encode(
-                                                                      x));
+                                                          Patient p = Patient();
+                                                          p.name=x["name"];
+                                                          p.tt1switch=x["tt1switch"];
+                                                          p.tt2switch=x["tt2switch"];
+                                                          p.ttbswitch=x["ttbswitch"];
+                                                          p.counsDiet=x["counsDiet"];
+
+
 
                                                           Navigator.pop(
                                                               context);
@@ -483,10 +487,14 @@ class _HomescreenState extends State<ASHAHomescreen> {
                                                     ["name"];
                                                     // x.remove('village');
                                                     // print(json.encode(x));
-                                                    Patient p =
-                                                    patientFromJson(
-                                                        json.encode(
-                                                            x));
+
+                                                    Patient p = Patient();
+                                                    p.name=x["name"];
+                                                    p.tt1switch=x["tt1switch"];
+                                                    p.tt2switch=x["tt2switch"];
+                                                    p.ttbswitch=x["ttbswitch"];
+                                                    p.counsDiet=x["counsDiet"];
+
 
                                                     Navigator.pop(
                                                         context);

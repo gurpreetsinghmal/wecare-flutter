@@ -46,7 +46,7 @@ class _UpdatePatientState extends State<UpdatePatient> {
       tt2switch=newdata!.tt2switch==null?false:true;
       ttbswitch=newdata!.ttbswitch==null?false:true;
       counsDiet=newdata!.counsDiet==null?false:true;
-     
+      print(newdata);
     });
 
   }
@@ -69,8 +69,8 @@ class _UpdatePatientState extends State<UpdatePatient> {
                   child: Form(
                     child: Column(
                       children: [
-                        Text(newdata!.name!,style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
-                        Text(village,style:TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                         Text(newdata!.name.toString(),style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),),
+                         Text(village,style:TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                         SizedBox(
                           height: 10,
                         ),
