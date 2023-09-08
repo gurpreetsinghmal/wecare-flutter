@@ -45,7 +45,6 @@ class _HomescreenState extends State<ANMHomescreen> {
       var jsonData = json.decode(res.body);
 
       record = jsonData;
-
       listpats.clear();
       listvnames.clear();
       listashanames.clear();
@@ -142,7 +141,7 @@ class _HomescreenState extends State<ANMHomescreen> {
         : Scaffold(
             key: _scaffoldKey,
             drawer: Drawer(
-              child: ListView(
+              child: Column(
                 children: [
                   Container(
                     decoration: BoxDecoration(color: Colors.blue),
@@ -202,15 +201,17 @@ class _HomescreenState extends State<ANMHomescreen> {
                   ListTile(
                     title: Text("Incharge of Asha's"),
                   ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: ashas.length,
-                      itemBuilder: (context, i) {
-                        print(i);
-                        return ListTile(
-                            leading: Icon(Icons.map_rounded),
-                            title: Text(ashas[i]["ashaname"]));
-                      })
+                  Flexible(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: ashas.length,
+                        itemBuilder: (context, i) {
+                          print(i);
+                          return ListTile(
+                              leading: Icon(Icons.map_rounded),
+                              title: Text(ashas[i]["ashaname"]));
+                        }),
+                  )
                 ],
               ),
             ),

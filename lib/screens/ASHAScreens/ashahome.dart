@@ -132,7 +132,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
         : Scaffold(
             key: _scaffoldKey,
             drawer: Drawer(
-              child: ListView(
+              child: Column(
                 children: [
                   Container(
                     decoration: BoxDecoration(color: Colors.blue),
@@ -190,14 +190,16 @@ class _HomescreenState extends State<ASHAHomescreen> {
                   ),
                   Divider(),
                   ListTile(title: Text("Coverage Area"),),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: village!.values.toList().length,
-                      itemBuilder:(context,i){
-                          return ListTile(
-                              leading: Icon(Icons.map_rounded),
-                              title:Text(village!.values.toList()[0]));
-                      })
+                  Flexible(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: village!.values.toList().length,
+                        itemBuilder:(context,i){
+                            return ListTile(
+                                leading: Icon(Icons.map_rounded),
+                                title:Text(village!.values.toList()[i])); //village!.values.toList()[0]
+                        }),
+                  )
                 ],
               ),
             ),
