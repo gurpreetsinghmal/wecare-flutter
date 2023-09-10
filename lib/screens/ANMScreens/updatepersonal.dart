@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -778,8 +777,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
               value:
               "F",
               groupValue:
-              _sexPreviousChild.text??
-                  sex,
+              _sexPreviousChild.text,
               onChanged:_currentDeliveryCount.text=="1"?null:
                   (v) {
                 setState(

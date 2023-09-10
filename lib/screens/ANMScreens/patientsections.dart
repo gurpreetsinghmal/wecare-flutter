@@ -38,7 +38,7 @@ class _PatientSectionsState extends State<PatientSections> {
                         widget.p, widget.villagename, widget.ashaname),
               ));
             }, title: 'Personal', icon: Icons.person),
-            DashboardTile(
+            widget.p.regdate!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -47,8 +47,8 @@ class _PatientSectionsState extends State<PatientSections> {
                   ));
                 },
                 title: 'ANC1',
-                icon: Icons.local_hospital),
-           widget.p!.anc1Date!=null?DashboardTile(
+                icon: Icons.local_hospital):SizedBox(),
+           widget.p.anc1Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -56,7 +56,7 @@ class _PatientSectionsState extends State<PatientSections> {
                             widget.p, widget.villagename, widget.ashaname),
                   ));
                 }, title: 'ANC2', icon: Icons.local_hospital):SizedBox(),
-      widget.p!.anc2Date!=null?DashboardTile(
+      widget.p.anc2Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -64,7 +64,7 @@ class _PatientSectionsState extends State<PatientSections> {
                             widget.p, widget.villagename, widget.ashaname),
                   ));
                 }, title: 'ANC3', icon: Icons.local_hospital):SizedBox(),
-      widget.p!.anc3Date!=null?DashboardTile(
+      widget.p.anc3Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
@@ -72,7 +72,7 @@ class _PatientSectionsState extends State<PatientSections> {
                             widget.p, widget.villagename, widget.ashaname),
                   ));
                 }, title: 'ANC4', icon: Icons.local_hospital):SizedBox(),
-      widget.p!.anc4Date!=null?DashboardTile(
+      widget.p.anc4Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
