@@ -48,40 +48,40 @@ class _PatientSectionsState extends State<PatientSections> {
                 },
                 title: 'ANC1',
                 icon: Icons.local_hospital),
-          /*  DashboardTile(
+           widget.p!.anc1Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
                         UpdateAnc2(
                             widget.p, widget.villagename, widget.ashaname),
                   ));
-                }, title: 'ANC2', icon: Icons.local_hospital),
-            DashboardTile(
+                }, title: 'ANC2', icon: Icons.local_hospital):SizedBox(),
+      widget.p!.anc2Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
                         UpdateAnc3(
                             widget.p, widget.villagename, widget.ashaname),
                   ));
-                }, title: 'ANC3', icon: Icons.local_hospital),
-            DashboardTile(
+                }, title: 'ANC3', icon: Icons.local_hospital):SizedBox(),
+      widget.p!.anc3Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
                         UpdateAnc4(
                             widget.p, widget.villagename, widget.ashaname),
                   ));
-                }, title: 'ANC4', icon: Icons.local_hospital),
-            DashboardTile(
+                }, title: 'ANC4', icon: Icons.local_hospital):SizedBox(),
+      widget.p!.anc4Date!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
                         UpdateAnc5(
                             widget.p, widget.villagename, widget.ashaname),
                   ));
-                }, title: 'Others', icon: Icons.padding),
+                }, title: 'Others', icon: Icons.padding):SizedBox(),
             // Add more tiles as needed
-            */
+
           ],
         ),
       ),

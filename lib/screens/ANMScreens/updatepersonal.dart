@@ -565,7 +565,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                               "previousDeliveryType":_currentDeliveryCount.text=="1"?null: _previousDeliveryType
                                   .text,
                               "sexPreviousChild": _currentDeliveryCount.text=="1"?null:_sexPreviousChild.text,
-                              "mothername": _MotherName.text,
+                              // "mothername": _MotherName.text,
                               "ageatmarriage": _MotherAgeAtMarriage.text,
                               "regdate": _RegistrationDateController.text,
                               "dob": _DOB.text,
