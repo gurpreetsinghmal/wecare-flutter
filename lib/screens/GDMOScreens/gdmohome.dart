@@ -8,7 +8,8 @@ import 'package:wecare/models/patient.dart';
 import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/reusables.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/screens/ANMScreens/patientsections.dart';
+
+import 'package:wecare/screens/GDMOScreens/gdmopatientsections.dart';
 
 
 class GDMOHomescreen extends StatefulWidget {
@@ -407,7 +408,7 @@ class MyListViewPatient extends StatelessWidget {
                     context,
                     CupertinoPageRoute(
                         builder: (context) =>
-                            PatientSections(patients[index], vnames[index],ashanames[index])));
+                            GdmoPatientSections(patients[index], vnames[index],ashanames[index])));
               },
               leading: Icon(Icons.person),
               trailing: Text(
