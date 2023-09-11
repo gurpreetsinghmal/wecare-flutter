@@ -8,6 +8,7 @@ import 'package:wecare/phone_auth/signin.dart';
 import 'package:wecare/screens/ANMScreens/anmhome.dart';
 import 'package:wecare/screens/ASHAScreens/ashahome.dart';
 import 'package:http/http.dart' as http;
+import 'package:wecare/screens/GDMOScreens/gdmohome.dart';
 
 import '../reusables.dart';
 class User {
@@ -69,7 +70,9 @@ class _VerifyotpState extends State<Verifyotp> {
       nextScreen = ASHAHomescreen();
     } else if (roleId == 2) {
       nextScreen = ANMHomescreen();
-    } else {
+    }else if (roleId == 3) {
+      nextScreen = GDMOHomescreen();
+    }  else {
       maketoast(msg: "No Role Assigned", ctx: context);
       return;
     }

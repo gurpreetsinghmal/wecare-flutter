@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wecare/screens/ANMScreens/anmhome.dart';
 import 'package:wecare/screens/ASHAScreens/ashahome.dart';
+import 'package:wecare/screens/GDMOScreens/gdmohome.dart';
 
 import '../phone_auth/signin.dart';
 import '../reusables.dart';
@@ -36,11 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigateToNextScreen(int roleId) {
     Widget nextScreen;
-
+    print(roleId);
     if (roleId == 1) {
       nextScreen = ASHAHomescreen();
     } else if (roleId == 2) {
       nextScreen = ANMHomescreen();
+    }else if (roleId == 3) {
+      nextScreen = GDMOHomescreen();
     } else {
       maketoast(msg: "No Role Assigned", ctx: context);
       return;
