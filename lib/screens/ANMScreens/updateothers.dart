@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/models/patient.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/models/patient.dart';
+import 'package:Sujatha/reusables.dart';
 
 
 class UpdateAnc5 extends StatefulWidget {
@@ -23,9 +23,7 @@ class _UpdateAnc5State extends State<UpdateAnc5> {
   final _formKey = GlobalKey<FormState>();
 
   //=====================miscellaneous============================
-  TextEditingController _TT1=TextEditingController();
-  TextEditingController _TT2=TextEditingController();
-  TextEditingController _TTB=TextEditingController();
+
   TextEditingController _JSYBeneficiary=TextEditingController();
   // TextEditingController _GynacologistSeeing=TextEditingController();
   // TextEditingController _MedicalSpecialistSeeing=TextEditingController();
@@ -54,7 +52,7 @@ class _UpdateAnc5State extends State<UpdateAnc5> {
       _ProposedSiteOfDelivery.text=newdata!.siteofdelivery??"";
     });
   }
-  bool _isExpanded = false;
+
 
   @override
   Widget build(BuildContext context) {

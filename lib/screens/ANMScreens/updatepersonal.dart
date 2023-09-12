@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/models/patient.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/models/patient.dart';
+import 'package:Sujatha/reusables.dart';
 
 
 class UpdatePersonal extends StatefulWidget {

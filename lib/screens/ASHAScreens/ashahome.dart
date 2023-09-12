@@ -4,12 +4,11 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wecare/models/patient.dart';
-import 'package:wecare/phone_auth/signin.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/models/patient.dart';
+import 'package:Sujatha/reusables.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/screens/ASHAScreens/addpatient.dart';
-import 'package:wecare/screens/ASHAScreens/updatepatient.dart';
+import 'package:Sujatha/screens/ASHAScreens/addpatient.dart';
+import 'package:Sujatha/screens/ASHAScreens/updatepatient.dart';
 
 
 class ASHAHomescreen extends StatefulWidget {
@@ -91,16 +90,6 @@ class _HomescreenState extends State<ASHAHomescreen> {
     }
   }
 
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.popUntil(context, (route) => route.isFirst);
-    Navigator.pushReplacement(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => Loginscreen(),
-      ),
-    );
-  }
 
   final mytextstyle = const TextStyle(
       color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold);
@@ -209,7 +198,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
               actions: [
                 IconButton(onPressed: callbottom, icon: Icon(Icons.search)),
                 IconButton(
-                    onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
+                    onPressed: () => showLogoutConfirmationDialog(context), icon: Icon(Icons.exit_to_app))
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(

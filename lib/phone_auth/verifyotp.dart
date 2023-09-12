@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wecare/phone_auth/signin.dart';
-import 'package:wecare/screens/ANMScreens/anmhome.dart';
-import 'package:wecare/screens/ASHAScreens/ashahome.dart';
+import 'package:Sujatha/phone_auth/signin.dart';
+import 'package:Sujatha/screens/ANMScreens/anmhome.dart';
+import 'package:Sujatha/screens/ASHAScreens/ashahome.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/screens/GDMOScreens/gdmohome.dart';
+import 'package:Sujatha/screens/GDMOScreens/gdmohome.dart';
 
 import '../reusables.dart';
 class User {

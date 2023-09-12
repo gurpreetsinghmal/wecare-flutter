@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:wecare/screens/ANMScreens/updateanc1.dart';
-import 'package:wecare/screens/ANMScreens/updateanc2.dart';
-import 'package:wecare/screens/ANMScreens/updateanc3.dart';
-import 'package:wecare/screens/ANMScreens/updateanc4.dart';
-import 'package:wecare/screens/ANMScreens/updateothers.dart';
-import 'package:wecare/screens/ANMScreens/updatepersonal.dart';
+import 'package:Sujatha/screens/ANMScreens/updateanc1.dart';
+import 'package:Sujatha/screens/ANMScreens/updateanc2.dart';
+import 'package:Sujatha/screens/ANMScreens/updateanc3.dart';
+import 'package:Sujatha/screens/ANMScreens/updateanc4.dart';
+import 'package:Sujatha/screens/ANMScreens/updateothers.dart';
+import 'package:Sujatha/screens/ANMScreens/updatepersonal.dart';
 
 import '../../models/patient.dart';
 

@@ -1,3 +1,5 @@
+import 'package:Sujatha/phone_auth/signin.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -97,6 +99,42 @@ Widget btncard(IconData icon, String title) {
       ),
     );
   }
+
+// Function to show the logout confirmation dialog
+void showLogoutConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Logout Confirmation'),
+        content: Text('Do you want to logout from Sujatha app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: ()=>logout(context),
+            child: Text('Yes'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+            child: Text('No'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void logout(context) async {
+  await FirebaseAuth.instance.signOut();
+  Navigator.popUntil(context, (route) => route.isFirst);
+  Navigator.pushReplacement(
+    context,
+    CupertinoPageRoute(
+      builder: (context) => Loginscreen(),
+    ),
+  );
+}
   
 // DropdownButtonFormField dropdown(BuildContext context, List<String> city, String initial_val, Function setState, String text ){
 //   return DropdownButtonFormField(

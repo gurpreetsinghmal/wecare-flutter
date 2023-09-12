@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wecare/screens/ANMScreens/anmhome.dart';
-import 'package:wecare/screens/ASHAScreens/ashahome.dart';
-import 'package:wecare/screens/GDMOScreens/gdmohome.dart';
+import 'package:Sujatha/screens/ANMScreens/anmhome.dart';
+import 'package:Sujatha/screens/ASHAScreens/ashahome.dart';
+import 'package:Sujatha/screens/GDMOScreens/gdmohome.dart';
 
 import '../phone_auth/signin.dart';
 import '../reusables.dart';
@@ -33,6 +33,17 @@ class _SplashScreenState extends State<SplashScreen> {
     fetchData();
   }
 
+  void logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.popUntil(context, (route) => route.isFirst);
+    Navigator.pushReplacement(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => Loginscreen(),
+      ),
+    );
+  }
+
 
 
   void navigateToNextScreen(int roleId) {
@@ -46,6 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
       nextScreen = GDMOHomescreen();
     } else {
       maketoast(msg: "No Role Assigned", ctx: context);
+      logout();
       return;
     }
 
@@ -68,20 +80,38 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('asset/images/wecare.png'),
+
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.pink.shade50, // Border color
+                      width: 4.0, // Border width
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.grey,
+                      backgroundImage: AssetImage('asset/images/logo.png'),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 20),
-                Text(
-                  'Welcome to Wecare',
-                  style: TextStyle(fontSize: 20, color: Colors.white),
+                RichText(
+                  text:TextSpan(
+                    children: [
+                      TextSpan(text:"Welcome to ",style: TextStyle(fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold)),
+                      TextSpan(text:"Sujatha",style: TextStyle(fontSize: 20, color: Colors.white,fontWeight: FontWeight.bold))
+                    ]
+                  ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 70),
                 CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
-                SizedBox(height: 70),
+                SizedBox(height: 20),
                 Text(
                   'An Initiative of District Adminsitration Faridkot ',
                   style: TextStyle(fontSize: 15, color: Colors.white),

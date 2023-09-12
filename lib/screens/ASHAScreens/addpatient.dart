@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/reusables.dart';
 import 'package:http/http.dart' as http;
 
 class AddNewPatient extends StatefulWidget {
@@ -125,7 +125,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
         });
         if (s != null) {
           print(s);
-          makeSuccesstoast(msg: s ?? "Null", ctx: context);
+          makeSuccesstoast(msg: s, ctx: context);
           Navigator.of(context).pop();
         }
       }
@@ -224,7 +224,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
                             DropdownButtonFormField(
                               decoration: getinputstyle(hint: "Choose village"),
                               hint: Text("Choose Patient Village"),
-                              items: villagedata!.map((item) {
+                              items: villagedata.map((item) {
                                 return DropdownMenuItem(
                                   value: item["key"],
                                   child: Text(item["value"].toString()),

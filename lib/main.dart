@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // ================
 import 'package:google_fonts/google_fonts.dart';
-import 'package:wecare/firebase_options.dart';
+import 'package:Sujatha/firebase_options.dart';
 
-import 'package:wecare/screens/splashscreen.dart';
+import 'package:Sujatha/screens/splashscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title:"Sujatha",
       theme: ThemeData(
         textTheme: GoogleFonts.poppinsTextTheme(),
         primarySwatch: Colors.blue,

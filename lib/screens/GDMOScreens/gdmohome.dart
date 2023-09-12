@@ -4,12 +4,10 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wecare/models/patient.dart';
-import 'package:wecare/phone_auth/signin.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/models/patient.dart';
+import 'package:Sujatha/reusables.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:wecare/screens/GDMOScreens/gdmopatientsections.dart';
+import 'package:Sujatha/screens/GDMOScreens/gdmopatientsections.dart';
 
 
 class GDMOHomescreen extends StatefulWidget {
@@ -28,7 +26,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
   String _block = "";
   String _smo = "";
   // String _blockcode = "";
-  List ashas = [];
+  List anms = [];
   String _profileimg = "";
   int _index = 0;
   Map<String, dynamic> record = {};
@@ -89,12 +87,12 @@ class _HomescreenState extends State<GDMOHomescreen> {
           _smo = jsonResponse["smo"] ?? "NA";
           _profileimg = jsonResponse["photo"];
 
-          Map<String, dynamic>? a = jsonResponse["ashas"];
-          ashas = [];
+          Map<String, dynamic>? a = jsonResponse["anms"];
+          anms = [];
           if(a!=null){
             a.forEach((key, value) {
-              var data = {"ashaid": key, "ashaname": value.toString()};
-              ashas.add(data);
+              var data = {"anmsid": key, "anmname": value.toString()};
+              anms.add(data);
             });
           }
 
@@ -103,17 +101,6 @@ class _HomescreenState extends State<GDMOHomescreen> {
     } catch (e) {
       maketoast(msg: "exception:${e.toString()}", ctx: context);
     }
-  }
-
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.popUntil(context, (route) => route.isFirst);
-    Navigator.pushReplacement(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => Loginscreen(),
-      ),
-    );
   }
 
   final mytextstyle = const TextStyle(
@@ -133,6 +120,8 @@ class _HomescreenState extends State<GDMOHomescreen> {
       });
     });
   }
+
+
 
 
   @override
@@ -208,12 +197,12 @@ class _HomescreenState extends State<GDMOHomescreen> {
             Flexible(
               child: ListView.builder(
                   shrinkWrap: true,
-                  itemCount: ashas.length,
+                  itemCount: anms.length,
                   itemBuilder: (context, i) {
                     print(i);
                     return ListTile(
                         leading: Icon(Icons.map_rounded),
-                        title: Text(ashas[i]["ashaname"]));
+                        title: Text(anms[i]["anmname"]));
                   }),
             )
           ],
@@ -225,7 +214,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
         actions: [
           IconButton(onPressed: callbottom, icon: Icon(Icons.search)),
           IconButton(
-              onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
+              onPressed: () => showLogoutConfirmationDialog(context), icon: Icon(Icons.exit_to_app))
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -249,6 +238,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
       ),
       body: ListView(
         children: [
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

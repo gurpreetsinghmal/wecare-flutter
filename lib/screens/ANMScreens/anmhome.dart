@@ -4,12 +4,10 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:wecare/models/patient.dart';
-import 'package:wecare/phone_auth/signin.dart';
-import 'package:wecare/reusables.dart';
+import 'package:Sujatha/models/patient.dart';
+import 'package:Sujatha/reusables.dart';
 import 'package:http/http.dart' as http;
-import 'package:wecare/screens/ANMScreens/patientsections.dart';
-import '../ANMScreens/updatepersonal.dart';
+import 'package:Sujatha/screens/ANMScreens/patientsections.dart';
 
 class ANMHomescreen extends StatefulWidget {
   const ANMHomescreen({super.key});
@@ -23,15 +21,15 @@ class _HomescreenState extends State<ANMHomescreen> {
   String _mobile = "";
   String _role = "";
   String _district = "";
-  String _distcode = "";
+  // String _distcode="";
   String _block = "";
   String _smo = "";
-  String _blockcode = "";
+   // String _blockcode = "";
   List ashas = [];
   String _profileimg = "";
   int _index = 0;
   Map<String, dynamic> record = {};
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Patient> listpats = [];
   List<String> listvnames = [];
   List<String> listashanames = [];
@@ -82,9 +80,9 @@ class _HomescreenState extends State<ANMHomescreen> {
           _mobile = jsonResponse["mobile"];
           _role = jsonResponse["role"] ?? "NA";
           _district = jsonResponse["dist_name"] ?? "NA";
-          _distcode = jsonResponse["dist_code"].toString();
+          // _distcode = jsonResponse["dist_code"].toString();
           _block = jsonResponse["block_name"] ?? "NA";
-          _blockcode = jsonResponse["block_code"].toString();
+          // _blockcode = jsonResponse["block_code"].toString();
           _smo = jsonResponse["smo"] ?? "NA";
           _profileimg = jsonResponse["photo"];
 
@@ -99,17 +97,6 @@ class _HomescreenState extends State<ANMHomescreen> {
     } catch (e) {
       maketoast(msg: "exception:${e.toString()}", ctx: context);
     }
-  }
-
-  void logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.popUntil(context, (route) => route.isFirst);
-    Navigator.pushReplacement(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => Loginscreen(),
-      ),
-    );
   }
 
   final mytextstyle = const TextStyle(
@@ -221,7 +208,7 @@ class _HomescreenState extends State<ANMHomescreen> {
               actions: [
                 IconButton(onPressed: callbottom, icon: Icon(Icons.search)),
                 IconButton(
-                    onPressed: () => logout(), icon: Icon(Icons.exit_to_app))
+                    onPressed: () => showLogoutConfirmationDialog(context), icon: Icon(Icons.exit_to_app))
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(

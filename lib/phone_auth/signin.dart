@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wecare/phone_auth/verifyotp.dart';
+import 'package:Sujatha/phone_auth/verifyotp.dart';
 import 'package:http/http.dart' as http;
 
 import '../reusables.dart';

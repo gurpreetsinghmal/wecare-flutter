@@ -1,5 +1,5 @@
-name: wecare
-description: A new Flutter project.
+name: Sujatha
+description: Sujatha is a helpfull app for Asha,Anms,GDMO and Gyno Doctors for monitoring Pregnant Ladies health checkup.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
