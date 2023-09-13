@@ -1,10 +1,7 @@
+import 'package:Sujatha/screens/GDMOScreens/updatepostpregnancy.dart';
+import 'package:Sujatha/screens/GDMOScreens/updateprepregnancy.dart';
 import 'package:flutter/material.dart';
-import 'package:Sujatha/screens/ANMScreens/updateanc1.dart';
-import 'package:Sujatha/screens/ANMScreens/updateanc2.dart';
-import 'package:Sujatha/screens/ANMScreens/updateanc3.dart';
-import 'package:Sujatha/screens/ANMScreens/updateanc4.dart';
-import 'package:Sujatha/screens/ANMScreens/updateothers.dart';
-import 'package:Sujatha/screens/ANMScreens/updatepersonal.dart';
+
 
 import '../../models/patient.dart';
 
@@ -445,7 +442,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
               physics:
                   NeverScrollableScrollPhysics(), // Number of columns in the grid
               children: [
-                DashboardTile(
+               /* DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => UpdatePersonal(
@@ -508,21 +505,20 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                         },
                         title: 'Others',
                         icon: Icons.padding)
-                    : SizedBox(),
+                    : SizedBox(), */
                 DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdateAnc5(
-                            widget.p, widget.villagename, widget.ashaname),
-                      ));
+                        builder: (context) => UpdatePregnancy(widget.p),
+                      ),);
                     },
                     title: 'Pregnancy Details',
                     icon: Icons.pregnant_woman),
                 DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdateAnc5(
-                            widget.p, widget.villagename, widget.ashaname),
+                        builder: (context) => UpdatePostPregnancy(
+                            widget.p),
                       ));
                     },
                     title: 'Post Pregnancy',

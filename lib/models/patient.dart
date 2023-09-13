@@ -121,6 +121,13 @@ class Patient {
   String? badhistoryDetails;
   String? siteofdelivery;
 
+  String? refergyno;
+  String? mcp;
+  String? modeofdelivery;
+  String? dateofdelivery;
+  String? sexofchild;
+
+
   String? regdate;
 
   Patient(
@@ -160,9 +167,7 @@ class Patient {
         this.heightf,
         this.heighti,
         this.pastillness,
-        this.jSYBeneficiary,
-        this.badhistory,
-        this.siteofdelivery,
+
 
         this.anc1Date,
         this.anc1Weekofpregnancy,
@@ -243,6 +248,15 @@ class Patient {
         this.anc4FoetalMovements,
         this.anc4Usg,
         this.anc4Counselling,
+
+        this.jSYBeneficiary,
+        this.badhistory,
+        this.siteofdelivery,
+        this.refergyno,
+        this.mcp,
+        this.modeofdelivery,
+        this.dateofdelivery,
+        this.sexofchild,
 
         this.regdate,
       });
@@ -369,6 +383,12 @@ class Patient {
     badhistory = json['badhistory'];
     badhistoryDetails = json['badhistoryDetails'];
     siteofdelivery = json['siteofdelivery'];
+
+    refergyno = json['refergyno'];
+    mcp=json['mcp'];
+    modeofdelivery=json['modeofdelivery'];
+    dateofdelivery=json['dateofdelivery'];
+    sexofchild=json['sexofchild'];
 
 
     regdate = json['regdate'];
@@ -498,6 +518,12 @@ class Patient {
     data['badhistory'] = this.badhistory;
     data['badhistoryDetails'] = this.badhistoryDetails;
     data['siteofdelivery'] = this.siteofdelivery;
+
+    data['refergyno']=this.refergyno;
+    data['mcp']=this.mcp;
+    data['modeofdelivery']=this.modeofdelivery;
+    data['dateofdelivery']=this.dateofdelivery;
+    data['sexofchild']=this.sexofchild;
 
 
     data['regdate'] = this.regdate;
