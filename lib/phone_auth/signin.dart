@@ -175,7 +175,7 @@ class _LoginscreenState extends State<Loginscreen> {
                               getinputstyle(hint: "Enter Mobile Number"),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ListTile(
                         leading: Checkbox(
                             activeColor: Colors.blue,
@@ -194,7 +194,7 @@ class _LoginscreenState extends State<Loginscreen> {
                           child: Text("I Agree with the rules"),
                         ),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 20),
                       // TextButton(
                       //
                       //   onPressed: sendotp,

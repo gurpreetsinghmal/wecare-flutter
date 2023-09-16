@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 
 
 import '../../models/patient.dart';
+/*import '../ANMScreens/updateanc1.dart';
+import '../ANMScreens/updateanc2.dart';
+import '../ANMScreens/updateanc3.dart';
+import '../ANMScreens/updateanc4.dart';
+import '../ANMScreens/updateothers.dart';
+import '../ANMScreens/updatepersonal.dart';*/
 
 class GdmoPatientSections extends StatefulWidget {
   final Patient p;
@@ -35,7 +41,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
 
     super.initState();
     var x = widget.p;
-    if (x.anc1Date != "") {
+    if(x.anc1Date != null) {
       bpsys = x.anc1BpSystolic;
       bpdia = x.anc1BpDiastolic;
       sugarfast = x.anc1Bloodsugarfasting;
@@ -47,7 +53,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       move = x.anc1FoetalMovements;
       usg = x.anc1Usg;
     }
-    if (x.anc2Date != "") {
+    if(x.anc2Date != null) {
       bpsys = x.anc2BpSystolic;
       bpdia = x.anc2BpDiastolic;
       sugarfast = x.anc2Bloodsugarfasting;
@@ -59,7 +65,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       move = x.anc2FoetalMovements;
       usg = x.anc2Usg;
     }
-    if (x.anc3Date != "") {
+    if(x.anc3Date != null) {
       bpsys = x.anc3BpSystolic;
       bpdia = x.anc3BpDiastolic;
       sugarfast = x.anc3Bloodsugarfasting;
@@ -71,7 +77,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       move = x.anc3FoetalMovements;
       usg = x.anc3Usg;
     }
-    if (x.anc4Date != "") {
+    if (x.anc4Date != null) {
       bpsys = x.anc4BpSystolic;
       bpdia = x.anc4BpDiastolic;
       sugarfast = x.anc4Bloodsugarfasting;
@@ -95,6 +101,75 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
         ),
         body: ListView(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Patient Basic Details",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Patient Name"),
+                            Text(
+                              widget.p.name ?? "NA",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Husband Name"),
+                            Text(
+                              widget.p.husbandName ?? "NA",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Date of Birth"),
+                            Text(
+                              widget.p.dob ?? "NA",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Village Name"),
+                            Text(
+                              widget.villagename ?? "NA",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -163,7 +238,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                   child: Column(
                     children: [
                       Text(
-                        "Lab Findings",
+                        "Latest Lab Findings",
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
@@ -442,7 +517,8 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
               physics:
                   NeverScrollableScrollPhysics(), // Number of columns in the grid
               children: [
-               /* DashboardTile(
+                /*
+                DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => UpdatePersonal(
@@ -505,7 +581,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                         },
                         title: 'Others',
                         icon: Icons.padding)
-                    : SizedBox(), */
+                    : SizedBox(),*/
                 DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
