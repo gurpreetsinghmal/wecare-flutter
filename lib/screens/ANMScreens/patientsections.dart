@@ -24,7 +24,6 @@ class _PatientSectionsState extends State<PatientSections> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-
         appBar: AppBar(
           title: Text('Patient Section'),
         ),

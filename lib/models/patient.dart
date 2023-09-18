@@ -14,9 +14,9 @@ class Patient {
   String? counsDiet;
   int? ashaId;
   int? anmId;
-  String? gdmoId;
-  String? gynoId;
-  String? doctorId;
+  int? gdmoId;
+  int? gynoId;
+  int? doctorId;
   String? rchid;
   String? caseno;
   String? mothername;

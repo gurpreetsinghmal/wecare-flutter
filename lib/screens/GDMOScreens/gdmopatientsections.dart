@@ -437,7 +437,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
               ),
             ),
             GridView.count(
-              crossAxisCount: 3,
+              crossAxisCount: 2,
               shrinkWrap: true,
               physics:
                   NeverScrollableScrollPhysics(), // Number of columns in the grid

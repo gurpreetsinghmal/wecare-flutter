@@ -156,7 +156,8 @@ class _HomescreenState extends State<GDMOHomescreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: CircleAvatar(
                               radius: 30,
-                              backgroundImage: NetworkImage(_profileimg),
+                              child: Icon(Icons.admin_panel_settings, color: Colors.blue,size: 30,),
+                              // backgroundImage: NetworkImage(_profileimg),
                             ),
                           ),
                           Column(

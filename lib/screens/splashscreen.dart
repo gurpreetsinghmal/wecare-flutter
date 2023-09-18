@@ -113,11 +113,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'An Initiative of District Adminsitration Faridkot ',
+                  'An Initiative of Health Department',
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
                 Text(
-                  'powered by NIC Faridkot',
+                  'powered by District Adminsitration Faridkot',
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
 
