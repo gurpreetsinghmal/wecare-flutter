@@ -2,7 +2,6 @@ import 'package:Sujatha/screens/GDMOScreens/updatepostpregnancy.dart';
 import 'package:Sujatha/screens/GDMOScreens/updateprepregnancy.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../models/patient.dart';
 /*import '../ANMScreens/updateanc1.dart';
 import '../ANMScreens/updateanc2.dart';
@@ -28,6 +27,8 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
   String? bpdia;
   String? sugarfast;
   String? sugarpost;
+  String? urinesugar;
+  String? urinealbumin;
   String? risk;
   String? hb;
   String? fundalh;
@@ -35,17 +36,20 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
   String? move;
   String? presentation;
   String? usg;
+  String date="";
 
   @override
   void initState() {
-
     super.initState();
     var x = widget.p;
-    if(x.anc1Date != null) {
+    if (x.anc1Date != null) {
+      date=x.anc1Date!;
       bpsys = x.anc1BpSystolic;
       bpdia = x.anc1BpDiastolic;
       sugarfast = x.anc1Bloodsugarfasting;
       sugarpost = x.anc1Bloodsugarpost;
+      urinesugar = x.anc1Urinesugar;
+      urinealbumin = x.anc1Urinealbumin;
       risk = x.anc1Highrisk;
       hb = x.anc1Hblevel;
       fundalh = x.anc1Fundalheight;
@@ -53,11 +57,14 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       move = x.anc1FoetalMovements;
       usg = x.anc1Usg;
     }
-    if(x.anc2Date != null) {
+    if (x.anc2Date != null) {
+      date=x.anc2Date!;
       bpsys = x.anc2BpSystolic;
       bpdia = x.anc2BpDiastolic;
       sugarfast = x.anc2Bloodsugarfasting;
       sugarpost = x.anc2Bloodsugarpost;
+      urinesugar = x.anc2Urinesugar;
+      urinealbumin = x.anc2Urinealbumin;
       risk = x.anc2Highrisk;
       hb = x.anc2Hblevel;
       fundalh = x.anc2Fundalheight;
@@ -65,11 +72,14 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       move = x.anc2FoetalMovements;
       usg = x.anc2Usg;
     }
-    if(x.anc3Date != null) {
+    if (x.anc3Date != null) {
+      date=x.anc3Date!;
       bpsys = x.anc3BpSystolic;
       bpdia = x.anc3BpDiastolic;
       sugarfast = x.anc3Bloodsugarfasting;
       sugarpost = x.anc3Bloodsugarpost;
+      urinesugar = x.anc3Urinesugar;
+      urinealbumin = x.anc3Urinealbumin;
       risk = x.anc3Highrisk;
       hb = x.anc3Hblevel;
       fundalh = x.anc3Fundalheight;
@@ -78,10 +88,13 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
       usg = x.anc3Usg;
     }
     if (x.anc4Date != null) {
+      date=x.anc4Date!;
       bpsys = x.anc4BpSystolic;
       bpdia = x.anc4BpDiastolic;
       sugarfast = x.anc4Bloodsugarfasting;
       sugarpost = x.anc4Bloodsugarpost;
+      urinesugar = x.anc4Urinesugar;
+      urinealbumin = x.anc4Urinealbumin;
       risk = x.anc4Highrisk;
       hb = x.anc4Hblevel;
       fundalh = x.anc4Fundalheight;
@@ -238,7 +251,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                   child: Column(
                     children: [
                       Text(
-                        "Latest Lab Findings",
+                        "Latest ANC Findings   "+date,
                         style: TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
@@ -254,7 +267,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   )
-                                : int.parse(bpsys!) > 0
+                                : int.parse(bpsys!) > 120
                                     ? Container(
                                         padding: const EdgeInsets.all(3.0),
                                         decoration: BoxDecoration(
@@ -262,17 +275,31 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                                             borderRadius:
                                                 BorderRadius.circular(5)),
                                         child: Text(
-                                          bpsys!,
+                                          bpsys! + "-Hypertension",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       )
-                                    : Text(
-                                        bpsys!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
+                                    : int.parse(bpsys!) < 90
+                                        ? Container(
+                                            padding: const EdgeInsets.all(3.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(5)),
+                                            child: Text(
+                                              bpsys! + "-Hypotension",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        : Text(
+                                            bpsys!,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          )
                           ],
                         ),
                       ),
@@ -284,29 +311,43 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                             Text("Blood Pressure Diastolic"),
                             bpdia == null
                                 ? Text(
-                                    "NA",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : int.parse(bpdia!) > 0
-                                    ? Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Text(
-                                          bpdia!,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : Text(
-                                        bpdia!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(bpdia!) > 80
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                bpdia! + "-Hypertension",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : int.parse(bpdia!) < 60
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                bpdia! + "-Hypotension",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                              bpdia!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
                           ],
                         ),
                       ),
@@ -318,29 +359,43 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                             Text("Blood Sugar Fasting "),
                             sugarfast == null
                                 ? Text(
-                                    "NA",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : int.parse(sugarfast!) > 0
-                                    ? Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Text(
-                                          sugarfast!,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : Text(
-                                        sugarfast!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(sugarfast!) > 120
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                sugarfast! + "-Hyperglycemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : int.parse(sugarfast!) < 80
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                sugarfast! + "-Hypoglycemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                              sugarfast!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
                           ],
                         ),
                       ),
@@ -352,29 +407,43 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                             Text("Blood Sugar Post Prandial"),
                             sugarpost == null
                                 ? Text(
-                                    "NA",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : int.parse(sugarpost!) > 0
-                                    ? Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Text(
-                                          sugarpost!,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : Text(
-                                        sugarpost!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(sugarpost!) > 140
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                sugarpost! + "-Hyperglycemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : int.parse(sugarpost!) < 100
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                sugarpost! + "-Hypoglycemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                              sugarpost!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
                           ],
                         ),
                       ),
@@ -420,29 +489,125 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                             Text("HB Level"),
                             hb == null
                                 ? Text(
-                                    "NA",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  )
-                                : int.parse(hb!) < 12
-                                    ? Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Text(
-                                          "Anaemic (${hb})",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : Text(
-                                        hb!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      )
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(hb!) > 16
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                hb! + "-Anemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : int.parse(hb!) < 11
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                hb! + "-Polyeythemia",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                              hb!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Urine Sugar"),
+                             urinesugar== null
+                                ? Text(
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(urinesugar!) > 5
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                urinesugar! + "-Glycosuria",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : int.parse(urinesugar!) < 1
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                urinesugar! + "",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                               urinesugar!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Urine ALbumin"),
+                            urinealbumin== null
+                                ? Text(
+                              "NA",
+                              style:
+                              TextStyle(fontWeight: FontWeight.bold),
+                            )
+                                : int.parse(urinealbumin!) < 30
+                                ? Container(
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                  BorderRadius.circular(5)),
+                              child: Text(
+                                urinealbumin! + "",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            )
+                                : Text(
+                              urinealbumin!,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold),
+                            )
                           ],
                         ),
                       ),
@@ -459,6 +624,7 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                           ],
                         ),
                       ),
+
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Row(
@@ -584,17 +750,18 @@ class _GdmoPatientSectionsState extends State<GdmoPatientSections> {
                     : SizedBox(),*/
                 DashboardTile(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdatePregnancy(widget.p),
-                      ),);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UpdatePregnancy(widget.p),
+                        ),
+                      );
                     },
                     title: 'Pregnancy Details',
                     icon: Icons.pregnant_woman),
                 DashboardTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => UpdatePostPregnancy(
-                            widget.p),
+                        builder: (context) => UpdatePostPregnancy(widget.p),
                       ));
                     },
                     title: 'Post Pregnancy',
