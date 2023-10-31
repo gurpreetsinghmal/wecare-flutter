@@ -22,9 +22,15 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
 
   //=====================miscellaneous============================
 
+  TextEditingController _doctor=TextEditingController();
+  TextEditingController _nurse=TextEditingController();
   TextEditingController _modeofdelivery=TextEditingController();
   TextEditingController _dateofdelivery=TextEditingController();
+  TextEditingController _kangaroo=TextEditingController();
+  TextEditingController _delayCord=TextEditingController();
+  TextEditingController _ballriRakhiya=TextEditingController();
   TextEditingController _sexofchild=TextEditingController();
+
 
   Patient? newdata;
 
@@ -39,8 +45,13 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
     super.initState();
     setState(() {
       newdata = widget.p;
+      _doctor.text=newdata!.doctorAttend??"";
+      _nurse.text=newdata!.nurseAttend??"";
       _modeofdelivery.text=newdata!.modeofdelivery??"0";
       _dateofdelivery.text=newdata!.dateofdelivery??"";
+      _kangaroo.text=newdata!.kangaroo??"0";
+      _delayCord.text=newdata!.delayCord??"0";
+      _ballriRakhiya.text=newdata!.ballariRakhiya??"0";
       _sexofchild.text=newdata!.sexofchild??"M";
 
     });
@@ -66,12 +77,49 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
                children: [
-
-                 Text(
-                     "Current Delivery Type"),
+                 Text("Attending doctor name"),
                  SizedBox(
                    height: 10,
                  ),
+                 TextFormField(
+                   controller: _doctor,
+                   decoration:
+                   getinputstyle(hint: "Attending doctor name"),
+                   inputFormatters: <TextInputFormatter>[
+                     FilteringTextInputFormatter.allow(
+                         RegExp(r'[a-zA-Z ]+')),
+                   ],
+                   validator: (v) {
+                     if (v == null || v.isEmpty) {
+                       return "Please enter name";
+                     }
+                     return null;
+                   },
+                 ),
+                 SizedBox(
+                   height: 10,
+                 ),
+                 Text("Attending nurse name"),
+                 TextFormField(
+                   controller: _nurse,
+                   decoration:
+                   getinputstyle(hint: "Attending nurse name"),
+                   inputFormatters: <TextInputFormatter>[
+                     FilteringTextInputFormatter.allow(
+                         RegExp(r'[a-zA-Z ]+')),
+                   ],
+                   validator: (v) {
+                     if (v == null || v.isEmpty) {
+                       return "Please enter name";
+                     }
+                     return null;
+                   },
+                 ),
+                 SizedBox(
+                   height: 10,
+                 ),
+                 Text(
+                     "Delivery Type"),
                  DropdownButtonFormField(
                    decoration: getinputstyle(
                        hint:
@@ -111,6 +159,17 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
           //       // SizedBox(height: 20,),
 
 
+
+
+                 SizedBox(height: 20,),
+                 Text("Kangaroo care given"),
+                 InputRadio(_kangaroo),
+                 SizedBox(height: 20,),
+                 Text("Delayed cord cutting"),
+                 InputRadio(_delayCord),
+                 SizedBox(height: 20,),
+                 Text("Beneficiary of Ballari Rakhiya Yojana"),
+                 InputRadio(_ballriRakhiya),
                  SizedBox(height: 20,),
                  Text("Sex of child"),
                  TextInputDeliverySexChild(),
@@ -129,8 +188,13 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
                                 "id": newdata!.id,
                                 "access_token": FirebaseAuth.instance
                                     .currentUser!.uid,
+                                 "doctorAttend":_doctor.text,
+                                 "nurseAttend":_nurse.text,
                                  "modeofdelivery": _modeofdelivery.text,
                                  "dateofdelivery": _dateofdelivery.text,
+                                 "kangaroo": _kangaroo.text,
+                                 "delayCord": _delayCord.text,
+                                 "ballariRakhiya": _ballriRakhiya.text,
                                  "sexofchild": _sexofchild.text,
                                 // "siteofdelivery": _ProposedSiteOfDelivery.text,
                                 "section":"gdmopostpreg"
@@ -319,6 +383,54 @@ class _UpdateAnc5State extends State<UpdatePostPregnancy> {
                 setState(
                         () {
                           _sexofchild.text=v.toString();
+                    });
+              }),
+        )
+      ],
+    );
+  }
+  Widget InputRadio(TextEditingController inputController){
+    return Row(
+      children: [
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "Yes"),
+              value:
+              "1",
+              groupValue:
+              inputController.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                          inputController.text=v.toString();
+                          //print(v.toString());
+                    });
+              }),
+        ),
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "No"),
+              value:
+              "0",
+              groupValue:
+              inputController.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                          inputController.text=v.toString();
+                          //print(v.toString());
                     });
               }),
         )

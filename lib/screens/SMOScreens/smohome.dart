@@ -10,14 +10,14 @@ import 'package:http/http.dart' as http;
 import 'package:Sujatha/screens/GDMOScreens/gdmopatientsections.dart';
 
 
-class GDMOHomescreen extends StatefulWidget {
-  const GDMOHomescreen({super.key});
+class SMOHomescreen extends StatefulWidget {
+  const SMOHomescreen({super.key});
 
   @override
-  State<GDMOHomescreen> createState() => _HomescreenState();
+  State<SMOHomescreen> createState() => _HomescreenState();
 }
 
-class _HomescreenState extends State<GDMOHomescreen> {
+class _HomescreenState extends State<SMOHomescreen> {
   String _name = "";
   String _mobile = "";
   String _role = "";
@@ -68,7 +68,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
     try {
       final token = FirebaseAuth.instance.currentUser!.uid;
       var url = Uri.https(
-          'vcare.aims.96.lt', '/api/getGdmoProfile', {'access_token': token});
+          'vcare.aims.96.lt', '/api/getSmoProfile', {'access_token': token});
 
       var response = await http.get(url);
       if (response.statusCode == 200) {
@@ -87,7 +87,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
           _smo = jsonResponse["smo"] ?? "NA";
           _profileimg = jsonResponse["photo"];
 
-          Map<String, dynamic>? a = jsonResponse["anms"];
+          Map<String, dynamic>? a = jsonResponse["gdmos"];
           anms = [];
           if(a!=null){
             a.forEach((key, value) {
@@ -192,21 +192,18 @@ class _HomescreenState extends State<GDMOHomescreen> {
               subtitle: Text("Reporting SMO"),
             ),
             Divider(),
-            ListTile(
-              title: Text("Faridkot"),
-              subtitle: Text("District"),
-            ),
-            // Flexible(
-            //   child: ListView.builder(
-            //       shrinkWrap: true,
-            //       itemCount: anms.length,
-            //       itemBuilder: (context, i) {
-            //         print(i);
-            //         return ListTile(
-            //             leading: Icon(Icons.map_rounded),
-            //             title: Text(anms[i]["anmname"]));
-            //       }),
-            // )
+            ListTile(title: Text("Coverage GDMO"),),
+            Flexible(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: anms.length,
+                  itemBuilder: (context, i) {
+                    print(i);
+                    return ListTile(
+                        leading: Icon(Icons.map_rounded),
+                        title: Text(anms[i]["anmname"]));
+                  }),
+            )
           ],
         ),
       ),
@@ -282,7 +279,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
               //   child: btncard(Icons.person_add, "Add Patient"),
               // ),
               InkWell(
-                onTap: callbottom,
+                onTap: null, //callbottom,
                 child: btncard(Icons.edit_calendar, "Update Patient"),
               ),
             ],

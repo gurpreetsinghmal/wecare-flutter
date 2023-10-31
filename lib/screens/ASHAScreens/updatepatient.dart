@@ -41,6 +41,7 @@ class _UpdatePatientState extends State<UpdatePatient> {
     super.initState();
     setState(() {
       newdata = widget.p;
+      print(jsonEncode(widget.p));
       village=widget.villagename;
       tt1switch=newdata!.tt1switch==null?false:true;
       tt2switch=newdata!.tt2switch==null?false:true;

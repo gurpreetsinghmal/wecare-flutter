@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Sujatha/screens/SMOScreens/smohome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,8 +31,44 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     fetchData();
   }
+
+//   dd(){
+//     // Fetch the current_app_version parameter from Firebase Remote Config
+//     FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+//     mFirebaseRemoteConfig.fetchAndActivate()
+//         .addOnCompleteListener(this, task -> {
+//     if (task.isSuccessful()) {
+//     String latestVersion = mFirebaseRemoteConfig.getString("current_app_version");
+//     String currentVersion = BuildConfig.VERSION_NAME;
+//
+//     if (compareVersions(currentVersion, latestVersion) < 0) {
+//     // Show a dialog or prompt the user to update the app
+//     // You can use an Intent to open the Play Store for the app.
+//     }
+//     }
+//     });
+//
+// // Function to compare version strings
+//     public int compareVersions(String v1, String v2) {
+//       String[] parts1 = v1.split("\\.");
+//       String[] parts2 = v2.split("\\.");
+//
+//       int minLength = Math.min(parts1.length, parts2.length);
+//
+//       for (int i = 0; i < minLength; i++) {
+//         int compare = Integer.compare(Integer.parseInt(parts1[i]), Integer.parseInt(parts2[i]));
+//         if (compare != 0) {
+//           return compare;
+//         }
+//       }
+//
+//       return Integer.compare(parts1.length, parts2.length);
+//     }
+//
+//   }
 
   void logout() async {
     await FirebaseAuth.instance.signOut();
@@ -55,7 +92,10 @@ class _SplashScreenState extends State<SplashScreen> {
       nextScreen = ANMHomescreen();
     }else if (roleId == 3) {
       nextScreen = GDMOHomescreen();
-    } else {
+    } else if (roleId == 5) {
+      nextScreen = SMOHomescreen();
+    }
+    else {
       maketoast(msg: "No Role Assigned", ctx: context);
       logout();
       return;

@@ -36,7 +36,15 @@ class _PatientSectionsState extends State<PatientSections> {
                     UpdatePersonal(
                         widget.p, widget.villagename, widget.ashaname),
               ));
-            }, title: 'Personal', icon: Icons.person),
+            }, title: 'Personal details', icon: Icons.person),
+            DashboardTile(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        UpdateAnc5(
+                            widget.p, widget.villagename, widget.ashaname),
+                  ));
+                }, title: 'Other details', icon: Icons.padding),
             widget.p.regdate!=null?DashboardTile(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -71,14 +79,6 @@ class _PatientSectionsState extends State<PatientSections> {
                             widget.p, widget.villagename, widget.ashaname),
                   ));
                 }, title: 'ANC4', icon: Icons.local_hospital):SizedBox(),
-      widget.p.anc4Date!=null?DashboardTile(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        UpdateAnc5(
-                            widget.p, widget.villagename, widget.ashaname),
-                  ));
-                }, title: 'Others', icon: Icons.padding):SizedBox(),
             // Add more tiles as needed
 
           ],

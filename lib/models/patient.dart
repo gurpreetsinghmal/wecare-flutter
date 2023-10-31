@@ -4,10 +4,13 @@ class Patient {
   String? husbandName;
   int? villageId;
   String? mobile;
+  String? abhaId;   //added
+  String? bloodgroup;   //added
   String? currDeliveryCount;
   String? prevChildAge;
   String? previousDeliveryType;
   String? sexPreviousChild;
+  String? ayushmanId;  //added
   String? tt1switch;
   String? tt2switch;
   String? ttbswitch;
@@ -29,6 +32,9 @@ class Patient {
   String? economy;
   String? address;
   String? para;
+  String? gravida;
+  String? abortion;
+  String? living;
   String? lmp;
   String? edd;
   String? weight;
@@ -123,8 +129,15 @@ class Patient {
 
   String? refergyno;
   String? mcp;
+  String? explained108;
+  String? avail108;
+  String? doctorAttend;
+  String? nurseAttend;
   String? modeofdelivery;
   String? dateofdelivery;
+  String? kangaroo;
+  String? delayCord;
+  String? ballariRakhiya;
   String? sexofchild;
 
 
@@ -136,10 +149,13 @@ class Patient {
         this.husbandName,
         this.villageId,
         this.mobile,
+        this.abhaId,
+        this.bloodgroup,
         this.currDeliveryCount,
         this.prevChildAge,
         this.previousDeliveryType,
         this.sexPreviousChild,
+        this.ayushmanId,
         this.tt1switch,
         this.tt2switch,
         this.ttbswitch,
@@ -254,23 +270,33 @@ class Patient {
         this.siteofdelivery,
         this.refergyno,
         this.mcp,
+        this.explained108,
+        this.avail108,
         this.modeofdelivery,
         this.dateofdelivery,
+        this.kangaroo,
+        this.delayCord,
+        this.ballariRakhiya,
         this.sexofchild,
 
         this.regdate,
       });
 
   Patient.fromJson(Map<String, dynamic> json) {
+    print(json['bloodgroup']);
     id = json['id'];
     name = json['name'];
     husbandName = json['husbandName'];
     villageId = json['village_id'];
     mobile = json['mobile'];
+    abhaId = json['abhaId'];
+    bloodgroup = json['bloodgroup'];
+
     currDeliveryCount = json['currDeliveryCount'];
     prevChildAge = json['prevChildAge'];
     previousDeliveryType = json['previousDeliveryType'];
     sexPreviousChild = json['sexPreviousChild'];
+    ayushmanId = json['ayushmanId'];
     tt1switch = json['tt1switch'];
     tt2switch = json['tt2switch'];
     ttbswitch = json['ttbswitch'];
@@ -292,6 +318,9 @@ class Patient {
     economy = json['economy'];
     address = json['address'];
     para = json['para'];
+    gravida = json['gravida'];
+    abortion = json['abortion'];
+    living = json['living'];
     lmp = json['Lmp'];
     edd = json['edd'];
     weight = json['weight'];
@@ -386,8 +415,15 @@ class Patient {
 
     refergyno = json['refergyno'];
     mcp=json['mcp'];
+    explained108=json['explained108'];
+    avail108=json['avail108'];
+    doctorAttend=json['doctorAttend'];
+    nurseAttend=json['nurseAttend'];
     modeofdelivery=json['modeofdelivery'];
     dateofdelivery=json['dateofdelivery'];
+    kangaroo=json['kangaroo'];
+    delayCord=json['delayCord'];
+    ballariRakhiya=json['ballariRakhiya'];
     sexofchild=json['sexofchild'];
 
 
@@ -401,10 +437,13 @@ class Patient {
     data['husbandName'] = this.husbandName;
     data['village_id'] = this.villageId;
     data['mobile'] = this.mobile;
+    data['abhaId'] = this.abhaId;
+    data['bloodgroup'] =  this.bloodgroup;
     data['currDeliveryCount'] = this.currDeliveryCount;
     data['prevChildAge'] = this.prevChildAge;
     data['previousDeliveryType'] = this.previousDeliveryType;
     data['sexPreviousChild'] = this.sexPreviousChild;
+    data['ayushmanId'] = this.ayushmanId;
     data['tt1switch'] = this.tt1switch;
     data['tt2switch'] = this.tt2switch;
     data['ttbswitch'] = this.ttbswitch;
@@ -426,6 +465,9 @@ class Patient {
     data['economy'] = this.economy;
     data['address'] = this.address;
     data['para'] = this.para;
+    data['gravida'] = this.gravida;
+    data['abortion'] = this.abortion;
+    data['living'] = this.living;
     data['Lmp'] = this.lmp;
     data['edd'] = this.edd;
     data['weight'] = this.weight;
@@ -521,8 +563,15 @@ class Patient {
 
     data['refergyno']=this.refergyno;
     data['mcp']=this.mcp;
+    data['explained108']=this.explained108;
+    data['avail108']=this.avail108;
+    data['doctorAttend'] = this.doctorAttend;
+    data['nurseAttend'] = this.nurseAttend;
     data['modeofdelivery']=this.modeofdelivery;
     data['dateofdelivery']=this.dateofdelivery;
+    data['kangaroo']=this.kangaroo;
+    data['delayCord']=this.delayCord;
+    data['ballariRakhiya']=this.ballariRakhiya;
     data['sexofchild']=this.sexofchild;
 
 

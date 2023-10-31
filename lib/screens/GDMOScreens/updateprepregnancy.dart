@@ -23,8 +23,10 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
   //=====================miscellaneous============================
 
   TextEditingController _refergyno=TextEditingController();
-  TextEditingController _placeofdelivery=TextEditingController();
   TextEditingController _mcpCardHolder=TextEditingController();
+  TextEditingController _108Explained=TextEditingController();
+  TextEditingController _108Availe=TextEditingController();
+  TextEditingController _placeofdelivery=TextEditingController();
 
   Patient? newdata;
 
@@ -35,8 +37,10 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
     setState(() {
       newdata = widget.p;
       _refergyno.text=newdata!.refergyno??"0";
-      _placeofdelivery.text=newdata!.siteofdelivery??"";
       _mcpCardHolder.text=newdata!.mcp??"0";
+      _108Explained.text=newdata!.explained108??"0";
+      _108Availe.text=newdata!.avail108??"0";
+      _placeofdelivery.text=newdata!.siteofdelivery??"";
 
     });
   }
@@ -63,7 +67,9 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
                children: [
 
                 /////    additional information switches
-                  Text("Refer Gyno"),
+                  Text("Refered to gynecologist",style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),),
                  TextInputReferGyno(),
                  SizedBox(height: 20,),
           //       // TextInputGynacologistSeeing(),
@@ -74,12 +80,22 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
           //       // SizedBox(height: 20,),
           //       // TextInputMedication(),
           //       // SizedBox(height: 20,),
-
+                 Text("MCP Card Holder",style: TextStyle(
+                   fontWeight: FontWeight.bold,
+                 ),),
+                 TextInputMCPHolder(),
+                 Text("Service 108 explained",style: TextStyle(
+                   fontWeight: FontWeight.bold,
+                 ),),
+                 TextInput(_108Explained),
+                 Text("Want to avail service 108",style: TextStyle(
+                   fontWeight: FontWeight.bold,
+                 ),),
+                 TextInput(_108Availe),
+                 SizedBox(height: 20,),
                  TextInputProposedSiteOfDelivery(),
                  SizedBox(height: 20,),
-                 Text("MCP Card Holder"),
-                 TextInputMCPHolder(),
-                 SizedBox(height: 20,),
+
 
                 Row(
                     children: [
@@ -97,9 +113,12 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
                                  "refergyno": _refergyno.text,
                                  "siteofdelivery": _placeofdelivery.text,
                                  "mcp": _mcpCardHolder.text,
+                                 "explained108": _108Explained.text,
+                                 "avail108": _108Availe.text,
                                 // "siteofdelivery": _ProposedSiteOfDelivery.text,
                                 "section":"gdmoprepreg"
                               };
+                              print(jsonEncode(input));
 
                              final response = await http.post(
                                 Uri.parse('https://vcare.aims.96.lt/api/gdmoupdatepatient'),
@@ -234,6 +253,55 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
       ],
     );
   }
+  Widget TextInput(TextEditingController textController){
+
+    return Row(
+      children: [
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "Yes"),
+              value:
+              "1",
+              groupValue:
+              textController.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                          textController.text=v.toString();
+                          //print(v.toString());
+                    });
+              }),
+        ),
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "No"),
+              value:
+              "0",
+              groupValue:
+              textController.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                          textController.text=v.toString();
+                          //print(v.toString());
+                    });
+              }),
+        )
+      ],
+    );
+  }
   /*Widget TextInputGynacologistSeeing(){
 
     return TextFormField(
@@ -348,6 +416,7 @@ class _UpdateAnc5State extends State<UpdatePregnancy> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: 'Proposed Site Of Delivery',
+        labelStyle: TextStyle(fontWeight: FontWeight.bold),
         floatingLabelStyle: MaterialStateTextStyle.resolveWith(
               (Set<MaterialState> states) {
             final Color color = states.contains(MaterialState.error)

@@ -23,31 +23,60 @@ class _AddNewPatientState extends State<AddNewPatient> {
   final husbandnameController = TextEditingController();
   final mobileController = TextEditingController();
 
+
   final devliverycountController = TextEditingController();
   final prevageController = TextEditingController();
   final deliveryTypeController = TextEditingController();
 
+  TextEditingController _JSYBeneficiary = TextEditingController();
   final tt1Controller = TextEditingController();
   final tt2Controller = TextEditingController();
   final ttbController = TextEditingController();
   final consdietController = TextEditingController();
+  final ayushmanController = TextEditingController();
+  final abhaIdController = TextEditingController();
+  //final bloodgroupController = TextEditingController();
+  //final jsyController = TextEditingController();
+
 
   //variables
 
   List villagedata = [];
   var villagevalue;
-  var prevchild;
+  var prevchild = "0";
   var sex = "M";
-  var prevdeliverytype;
+  var prevdeliverytype ;
+  var jsyValue ;
+  var selectedBloodGroup; // Variable to hold the selected blood group
+
+  List<String> bloodGroups = [
+    'A+',
+    'B+',
+    'AB+',
+    'O+',
+    'A-',
+    'B-',
+    'AB-',
+    'O-',
+  ];
 
   bool tt1switch = false;
   bool tt2switch = false;
   bool ttbswitch = false;
   bool counsDiet = false;
+  bool ayushmanCardswitch = false;
+  bool jsyswitch = false;
+  //String preChildChoice = '0';
+
+  // Default value is 'No'
 
   final _choice = [
     {"text": 'No', "val": '0'},
     {"text": 'Yes', "val": '1'}
+  ];
+  final _jsy = [
+    {"text": 'Yes', "val": '1'},
+    {"text": 'No', "val": '0'}
   ];
   final deliverychoices = [
     {"text": "Normal", "val": "0"},
@@ -115,9 +144,16 @@ class _AddNewPatientState extends State<AddNewPatient> {
         patient["husbandName"] = husbandnameController.text.trim();
         patient["village"] = villagevalue;
         patient["mobile"] = mobileController.text.trim();
+        //patient["abhaId"] = abhaIdController.text.trim();
+
+        patient["abhaId"] = abhaIdController.text.trim();
+        patient["bloodgroup"] = selectedBloodGroup;
+        patient["jSYBeneficiary"] = jsyValue;
+
         patient["access_token"] = FirebaseAuth.instance.currentUser!.uid;
 
         print("data validated");
+        print(jsonEncode(patient));
 
         String? s = await postAddPatient(jsonEncode(patient));
         setState(() {
@@ -266,6 +302,132 @@ class _AddNewPatientState extends State<AddNewPatient> {
                             SizedBox(
                               height: 10,
                             ),
+                            Text("Abha Id"),
+                            TextFormField(
+                              maxLength: 14,
+                              controller: abhaIdController,
+                              decoration:
+                              getinputstyle(hint: "Enter Patient Abha Id"),
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z0-9]+')),
+                              ],
+                              validator: (v) {
+                                if (v == null || v.isEmpty) {
+                                  return "Please enter the Patient Abha Id";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            /*Text("Blood Group"),
+                            TextFormField(
+                              controller: bloodgroupController,
+                              decoration:
+                              getinputstyle(hint: "Enter Patient Blood Group"),
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z0-9 ]+')),
+                              ],
+                              validator: (v) {
+                                if (v == null || v.isEmpty) {
+                                  return "Please enter the Patient Abha Id";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),*/
+                            Text("Blood Group"),
+                            DropdownButtonFormField(
+                              value: selectedBloodGroup,
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedBloodGroup = newValue.toString();
+                                });
+                              },
+                              decoration: getinputstyle(hint: "Choose Blood group of patient"),
+                              items: bloodGroups.map((String bloodGroup) {
+                                return DropdownMenuItem<String>(
+                                  value: bloodGroup,
+                                  child: Text(bloodGroup),
+                                );
+                              }).toList(),
+
+                              validator: (v) {
+                                if (v == null) {
+                                  return "Please choose Blood group";
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                           /* Text(
+                                "Patient JSY beneficiary"),
+                            DropdownButtonFormField(
+                                      decoration: getinputstyle(hint: "Choose Yes or No"),
+                                      hint: Text("Choose Yes or No"),
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: 0,
+                                          child: Text('No'),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 1,
+                                          child: Text('Yes'),
+                                        ),
+                                      ],
+                                      onChanged: (newVal) {
+                                        setState(() {
+                                          jsyValue = newVal as int?;
+                                        });
+                                      },
+                                      value: jsyValue,
+                                      validator: (v) {
+                                        if (v == null) {
+                                          return "Please choose an option";
+                                        }
+                                        return null;
+                                      },
+                                    )
+                            SizedBox(
+                              height: 10,
+                            ),*/
+                            Text("JSY Beneficiary"),
+                            DropdownButtonFormField(
+                              decoration: getinputstyle(
+                                  hint: "Choose Yes or No"),
+
+                              items: _jsy
+                                  .map((item) {
+                                return DropdownMenuItem(
+                                  value: item['val']
+                                      .toString(),
+                                  child: Text(item[
+                                  "text"]
+                                      .toString()),
+                                );
+                              }).toList(),
+                              value:
+                              jsyValue,
+                              validator: (v) {
+                                if (v == null) {
+                                  return "Please choose Yes or No";
+                                }
+                                jsyValue =
+                                    v;
+                                return null;
+                              },
+                              onChanged: (v) {},
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Text(
                                 "Want to fill information about previous delivery"),
                             DropdownButtonFormField(
@@ -285,6 +447,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                     print(patient);
                                     showDialog(
                                         context: context,
+                                        barrierDismissible: false,
                                         builder: (BuildContext context) {
                                           return Form(
                                             key: _formkey2,
@@ -451,6 +614,12 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                                       ]),
                                                 ),
                                                 actions: [
+                                                  Button(context, "Cancle", () {
+
+                                                      prevchild = "0"; // Set prevchild to 'No'
+                                                      Navigator.of(context).pop(false);
+
+                                                  }),
                                                   Button(context, "Ok", () {
                                                     if (_formkey2.currentState!
                                                         .validate()) {
@@ -467,7 +636,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
 
                                                       Navigator.pop(context);
                                                     }
-                                                  })
+                                                  }),
                                                 ],
                                               );
                                             }),
@@ -495,7 +664,75 @@ class _AddNewPatientState extends State<AddNewPatient> {
                             SizedBox(
                               height: 10,
                             ),
+
+
+
                             /////    additional information switches
+
+
+
+   /*                 Row(
+                    children: [
+                        Text('Ayushman card: '),
+                    DropdownButton<String>(
+                      value: dropdownValue,
+                      onChanged: (String? newValue) async {
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+
+                        if (newValue == 'Yes') {
+                          final userInput = await openTextDialog("Ayushman Card details",ayushmanController);
+                          if (userInput != null) {
+                            setState(() {
+                              ayushmanController.text = userInput;
+                            });
+                          }
+                        }
+                      },
+                      items: <String>['Yes', 'No'].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    ],
+                  ), //if waant to use dropdown instead of toggle
+                            Text(
+                              "JSY Beneficiary",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                            Text("JSY Beneficiary"),
+                            TextInputJSYBeneficiary(),*/
+                            ListTile(
+                              title: Text("Ayushman card holder"),
+                              subtitle: Text(
+                                ayushmanController.text,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue),
+                              ),
+                              trailing: Switch(
+                                value: ayushmanCardswitch,
+                                onChanged: ((value) async {
+                                  if (value) {
+                                    final ayushmanCardDetails = await openTextDialog("Ayushman Card details", ayushmanController);
+                                        if (ayushmanCardDetails == null || ayushmanCardDetails.isEmpty) {
+                                          return;
+                                        }
+                                  } else {
+                                    ayushmanController.clear();
+                                  }
+                                  setState(() {
+                                    ayushmanCardswitch = value;
+                                    patient["ayushmanId"] = ayushmanController.text;
+                                  });
+                                }),
+                              ),
+                            ),
+
                             ListTile(
                               title: Text("TT1 "),
                               subtitle: Text(
@@ -510,7 +747,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                   if (value) {
                                     final tt1date = await openSwitchDialog(
                                         "TT1", tt1Controller);
-                                    if (tt1date == "") {
+                                    if (tt1date == null || tt1date.isEmpty) {
                                       return;
                                     }
                                   } else {
@@ -537,7 +774,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                   if (value) {
                                     final tt2date = await openSwitchDialog(
                                         "TT2", tt2Controller);
-                                    if (tt2date == "") {
+                                    if (tt2date == null || tt2date.isEmpty) {
                                       return;
                                     }
                                   } else {
@@ -564,7 +801,7 @@ class _AddNewPatientState extends State<AddNewPatient> {
                                   if (value) {
                                     final ttbdate = await openSwitchDialog(
                                         "TTB", ttbController);
-                                    if (ttbdate == "") {
+                                    if (ttbdate == null || ttbdate.isEmpty) {
                                       return;
                                     }
                                   } else {
@@ -648,7 +885,81 @@ class _AddNewPatientState extends State<AddNewPatient> {
                   child: Text("Ok"))
             ],
           ));
+  Future<String?> openTextDialog(String text, TextEditingController controller) async {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(text),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: "Enter details"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(null);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(controller.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Widget TextInputJSYBeneficiary(){
 
+    return Row(
+      children: [
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "Yes"),
+              value:
+              "1",
+              groupValue:
+              _JSYBeneficiary.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                      _JSYBeneficiary.text=v.toString();
+                    });
+              }),
+        ),
+        Expanded(
+          child:
+          RadioListTile(
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal:
+                  0.0),
+              title: Text(
+                  "No"),
+              value:
+              "0",
+              groupValue:
+              _JSYBeneficiary.text,
+              onChanged:
+                  (v) {
+                setState(
+                        () {
+                      _JSYBeneficiary.text=v.toString();
+                    });
+              }),
+        )
+      ],
+    );
+  }
   Future<String?> postAddPatient(String d) async {
     Map<String, dynamic> json;
     try {

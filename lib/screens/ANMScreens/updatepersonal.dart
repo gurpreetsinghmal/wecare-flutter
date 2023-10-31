@@ -26,6 +26,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
   TextEditingController _prevChildAge=TextEditingController();
   TextEditingController _previousDeliveryType=TextEditingController();
   TextEditingController _sexPreviousChild=TextEditingController();
+  TextEditingController ayushmanController = TextEditingController();
   TextEditingController _TT1=TextEditingController();
   TextEditingController _TT2=TextEditingController();
   TextEditingController _TTB=TextEditingController();
@@ -51,7 +52,10 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
   TextEditingController _EconomicStatus=TextEditingController();
   TextEditingController _Address=TextEditingController();
   TextEditingController _RegistrationDateController = TextEditingController();
-  TextEditingController _ParaGravida=TextEditingController();
+  TextEditingController _Para=TextEditingController();
+  TextEditingController _Gravida=TextEditingController();
+  TextEditingController _Abortion=TextEditingController();
+  TextEditingController _Living=TextEditingController();
   TextEditingController _LMP=TextEditingController();
   TextEditingController _EDD=TextEditingController();
   TextEditingController _Weight=TextEditingController();
@@ -63,8 +67,10 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
   bool tt2switch = false;
   bool ttbswitch = false;
   bool counsDiet = false;
+  bool ayushmanCardswitch = false;
   var prevdeliverytype;
   var sex = "M";
+  var selectedBloodGroup;
 
   final _choice = [
     {"text": 'No', "val": '0'},
@@ -87,11 +93,30 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
     {"text": "EWS", "val": "1"},
   ];
 
-  final para=[
+  final numbers=[
+    {"text": "0", "val": "0"},
+    {"text": "1", "val": "1"},
+    {"text": "2", "val": "2"},
+    {"text": "3", "val": "3"},
+    {"text": "4", "val": "4"},
+    {"text": "5", "val": "6"},
+    {"text": "6", "val": "6"}
+  ];
+  final Gravida=[
     {"text": "Para", "val": "PARA"},
     {"text": "Gravida", "val": "GRAVIDA"},
   ];
-
+  //List<String> numbers = ["1", "2", "3", "4", "5", "6"];
+  List<String> bloodGroups = [
+    'A+',
+    'B+',
+    'AB+',
+    'O+',
+    'A-',
+    'B-',
+    'AB-',
+    'O-',
+  ];
   Patient? newdata;
   String village="";
   String ashaname="";
@@ -101,13 +126,16 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
     super.initState();
     setState(() {
       newdata = widget.p;
+      //print(jsonEncode(newdata!.ayushmanId));
       village=widget.villagename;
       ashaname=widget.ashaname;
-
+      selectedBloodGroup = newdata?.bloodgroup?.isNotEmpty == true ? newdata!.bloodgroup! : null;
+      //selectedBloodGroup = newdata!.name.toString();
+      ayushmanCardswitch=newdata!.ayushmanId==null?false:true;
       tt1switch=newdata!.tt1switch==null?false:true;
       tt2switch=newdata!.tt2switch==null?false:true;
       ttbswitch=newdata!.ttbswitch==null?false:true;
-
+      ayushmanController.text = newdata!.ayushmanId??"";
       _TT1.text=newdata!.tt1switch??"";
       _TT2.text=newdata!.tt2switch??"";
       _TTB.text=newdata!.ttbswitch??"";
@@ -137,7 +165,10 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
       _EconomicStatus.text=newdata!.economy??economystatus[0]["val"].toString();
       _Address.text=newdata!.address??"";
       _RegistrationDateController.text =newdata!.regdate??"";
-      _ParaGravida.text=newdata!.para??para[0]["val"].toString();
+      _Para.text=newdata!.para??numbers[0]["val"].toString();
+      _Gravida.text=newdata!.gravida??numbers[0]["val"].toString();
+      _Abortion.text=newdata!.abortion??numbers[0]["val"].toString();
+      _Living.text=newdata!.living??numbers[0]["val"].toString();
       _LMP.text=newdata!.lmp??"";
       _EDD.text=newdata!.edd??"";
       _Weight.text=newdata!.weight??"";
@@ -170,8 +201,39 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                 ListTile(subtitle:Text("Husband Name"),title:Text(newdata!.husbandName.toString(),),),
                 ListTile(subtitle:Text("Village Name"),title:Text(village.toString(),),),
                 ListTile(subtitle:Text("Asha Name"),title:Text(ashaname.toString(),),),
-
+                ListTile(subtitle:Text("Abha Id"),title:Text(newdata!.abhaId != null ? newdata!.abhaId.toString() : "Abha Id needs to be updated",),),
                 /////    additional information switches
+                SizedBox(
+                  height: 10,
+                ),
+                Text("Blood Group"),
+                DropdownButtonFormField(
+                  value: selectedBloodGroup,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedBloodGroup = newValue.toString();
+                      //print(selectedBloodGroup.toString());
+                      newdata!.bloodgroup = newValue.toString();
+                    });
+                  },
+                  decoration: getinputstyle(hint: "Choose Blood group of patient"),
+                  items: bloodGroups.map((String bloodGroup) {
+                    return DropdownMenuItem<String>(
+                      value: bloodGroup,
+                      child: Text(bloodGroup),
+                    );
+                  }).toList(),
+
+                  validator: (v) {
+                    if (v == null) {
+                      return "Please choose Blood group";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                     "Want to fill information about previous delivery"),
                 DropdownButtonFormField(
@@ -423,8 +485,17 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                 SizedBox(height: 20,),
                 TextInputRegistrationDate(),
                 SizedBox(height: 20,),
-                Text("PARA/GRAVIDA"),
-                TextInputGravida(),
+                Text("PARA"),
+                TextInputGravida(_Para),
+                SizedBox(height: 20,),
+                Text("Gravida"),
+                TextInputGravida(_Gravida),
+                SizedBox(height: 20,),
+                Text("Abortion"),
+                TextInputGravida(_Abortion),
+                SizedBox(height: 20,),
+                Text("PARA"),
+                TextInputGravida(_Living),
                 SizedBox(height: 20,),
                 TextInputLMP(),
                 SizedBox(height: 20,),
@@ -442,7 +513,32 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                 SizedBox(height: 20,),
                 TextInputPastIllness(),
                 SizedBox(height: 20,),
-
+                ListTile(
+                  title: Text("Ayushman card holder"),
+                  subtitle: Text(
+                    newdata!.ayushmanId ?? ayushmanController.text,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue),
+                  ),
+                  trailing: Switch(
+                    value: ayushmanCardswitch,
+                    onChanged: ((value) async {
+                      if (value) {
+                        final ayushmanCardDetails = await openTextDialog("Ayushman Card details", ayushmanController);
+                        if (ayushmanCardDetails == null || ayushmanCardDetails.isEmpty) {
+                          return;
+                        }
+                      } else {
+                        ayushmanController.clear();
+                      }
+                      setState(() {
+                        ayushmanCardswitch = value;
+                        newdata!.ayushmanId = ayushmanController.text;
+                      });
+                    }),
+                  ),
+                ),
                 ListTile(
                   title: Text("TT1"),
                   subtitle: Text(
@@ -458,7 +554,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                       if (value) {
                         final tt1date = await openSwitchDialog(
                             "TT1", _TT1);
-                        if (tt1date == "") {
+                        if (tt1date == null || tt1date == "") {
                           return;
                         }
                       } else {
@@ -485,7 +581,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                       if (value) {
                         final tt2date = await openSwitchDialog(
                             "TT2", _TT2);
-                        if (tt2date == "") {
+                        if (tt2date == null ||tt2date == "") {
                           return;
                         }
                       } else {
@@ -512,7 +608,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                       if (value) {
                         final ttbdate = await openSwitchDialog(
                             "TTB", _TTB);
-                        if (ttbdate == "") {
+                        if (ttbdate == null ||ttbdate == "") {
                           return;
                         }
                       } else {
@@ -559,6 +655,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                                   .currentUser!.uid,
                               "rchid": _RCHID.text,
                               "caseno": _Caseno.text,
+                              "bloodgroup" : selectedBloodGroup.toString(),
                               "currDeliveryCount": _currentDeliveryCount.text,
                               "prevChildAge": _currentDeliveryCount.text=="1"?null:_prevChildAge.text,
                               "previousDeliveryType":_currentDeliveryCount.text=="1"?null: _previousDeliveryType
@@ -574,13 +671,17 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                               "caste": _Caste.text,
                               "economy": _EconomicStatus.text,
                               "address": _Address.text,
-                              "para": _ParaGravida.text,
+                              "para": _Para.text,
+                              "gravida": _Gravida.text,
+                              "abortion": _Abortion.text,
+                              "living": _Living.text,
                               "Lmp": _LMP.text,
                               "edd": _EDD.text,
                               "weight": _Weight.text,
                               "heightf": _Heightf.text,
                               "heighti": _Heighti.text,
                               "pastillness": _PastIllness.text,
+                              "ayushmanId":ayushmanController.text,
                               "tt1switch": _TT1.text,
                               "tt2switch": _TT2.text,
                               "ttbswitch": _TTB.text,
@@ -597,7 +698,7 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
                             );
 
                             var res=jsonDecode(response.body);
-                            print(res);
+                            print(jsonEncode(personaldata));
                             if(res["code"]==200){
                               makeSuccesstoast(msg:res["msg"] , ctx: context);
                               Navigator.pop(context);
@@ -1325,33 +1426,33 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
       });
   }
 
-  Widget TextInputGravida(){
+  Widget TextInputGravida(TextEditingController _Para){
     return DropdownButtonFormField(
       decoration: getinputstyle(
           hint:
-          "PARA/GRAVIDA"),
+          "PARA"),
       hint: Text("Select"),
-      items: para
-          .map((item) {
+      items: numbers
+          .map((number) {
         return DropdownMenuItem(
-          value: item['val']
+          value: number['val']
               .toString(),
-          child: Text(item[
+          child: Text(number[
           "text"]
               .toString()),
         );
       }).toList(),
       value:
-      _ParaGravida.text,
+      _Para.text,
       validator: (v) {
         if (v == null) {
-          return "Please choose PARA/GRAVIDA";
+          return "Please choose PARA";
         }
         return null;
       },
       onChanged: (v) {
         if(v!=null) {
-          _ParaGravida.text = v.toString();
+          _Para.text = v.toString();
         }
       },
     );
@@ -1551,7 +1652,34 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
-
+  Future<String?> openTextDialog(String text, TextEditingController controller) async {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(text),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: "Enter details"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(null);
+              },
+            ),
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop(controller.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<String?> openSwitchDialog(id, controller) => showDialog<String?>(
       context: context,

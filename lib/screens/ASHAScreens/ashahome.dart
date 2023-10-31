@@ -43,7 +43,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
       var jsonData = json.decode(res.body);
 
       record = jsonData;
-
+      //print(record);
       listpats.clear();
       listvnames.clear();
       if (record["patient"] != null) {
@@ -268,6 +268,27 @@ class _HomescreenState extends State<ASHAHomescreen> {
                     InkWell(
                       onTap: callbottom,
                       child: btncard(Icons.edit_calendar, "Update Patient"),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 80,
+                    ),
+                    Text(
+                      "ਲਿੰਗ ਨਿਰਧਾਰਣ ਕਾਨੂੰਨੀ ਅਪਰਾਧ ਹੈ।",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    Text(
+                      "Sex determination is a legal offense.",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

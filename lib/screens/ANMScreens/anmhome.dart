@@ -51,6 +51,7 @@ class _HomescreenState extends State<ANMHomescreen> {
           var p = Patient.fromJson(record["patient"][k]);
           listpats.add(p);
           String v = record["patient"][k]["village"]["name"];
+          //print(record["patient"][k]["bloodgroup"]["name"]+"hello");
           listvnames.add(v);
           String a = record["patient"][k]["asha"]["name"];
           listashanames.add(a);
@@ -280,6 +281,27 @@ class _HomescreenState extends State<ANMHomescreen> {
                     ),
                   ],
                 ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      height: 80,
+                    ),
+                    Text(
+                      "ਲਿੰਗ ਨਿਰਧਾਰਣ ਕਾਨੂੰਨੀ ਅਪਰਾਧ ਹੈ।",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                    Text(
+                      "Sex determination is a legal offense.",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ],
             ),
           );
@@ -307,6 +329,7 @@ class _HomescreenState extends State<ANMHomescreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: TextFormField(
+                                maxLength: 10,
                                 controller: SearchController,
                                 decoration: InputDecoration(
                                     labelText: "Enter Mobile / RCH ID"),
