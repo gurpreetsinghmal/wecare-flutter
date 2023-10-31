@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:Sujatha/firebase_options.dart';
 
 import 'package:Sujatha/screens/splashscreen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

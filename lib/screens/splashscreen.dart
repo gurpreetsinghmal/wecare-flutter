@@ -2,11 +2,15 @@ import 'dart:convert';
 
 import 'package:Sujatha/screens/SMOScreens/smohome.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Sujatha/screens/ANMScreens/anmhome.dart';
 import 'package:Sujatha/screens/ASHAScreens/ashahome.dart';
 import 'package:Sujatha/screens/GDMOScreens/gdmohome.dart';
+import 'package:flutter/services.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../phone_auth/signin.dart';
 import '../reusables.dart';
@@ -26,8 +30,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late User user;
-
-
+  String link="";
+  String version="";
+  String current_version="";
   @override
   void initState() {
     super.initState();
@@ -83,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
 
-  void navigateToNextScreen(int roleId) {
+  void navigateToNextScreen(int roleId) async{
     Widget nextScreen;
     print(roleId);
     if (roleId == 1) {
@@ -100,6 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
       logout();
       return;
     }
+
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => nextScreen),
@@ -156,8 +162,14 @@ class _SplashScreenState extends State<SplashScreen> {
                   'An Initiative of Health Department',
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
+                SizedBox(height: 10),
                 Text(
                   'powered by District Adminsitration Faridkot',
+                  style: TextStyle(fontSize: 15, color: Colors.white),
+                ),
+                SizedBox(height: 50),
+                Text(
+                  'App Version : '+version,
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
 
@@ -171,6 +183,36 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void fetchData() async {
     await Future.delayed(Duration(seconds: 3));
+    try {
+      final FirebaseRemoteConfig remoteConfig =
+          FirebaseRemoteConfig.instance;
+      // Using zero duration to force fetching from remote server.
+      await remoteConfig.setConfigSettings(
+        RemoteConfigSettings(
+          fetchTimeout: const Duration(seconds: 10),
+          minimumFetchInterval: Duration.zero,
+        ),
+      );
+      await remoteConfig.fetchAndActivate();
+      current_version=remoteConfig.getString('current_app_sujatha_version');
+      link=remoteConfig.getString('app_update_url');
+      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+        String appName = packageInfo.appName;
+        String packageName = packageInfo.packageName;
+         version = packageInfo.version;
+        String buildNumber = packageInfo.buildNumber;
+
+      });
+
+    } on PlatformException catch (exception) {
+      // Fetch exception.
+      print(exception);
+      print( 'Exception: $exception');
+    } catch (exception) {
+      print(exception);
+      print( 'Unable to fetch remote config. Cached or default values will be '
+          'used');
+    }
     final userUid = FirebaseAuth.instance.currentUser?.uid;
     if (userUid != null) {
       // Fetch access_token using userUid from your database or Firebase
@@ -186,13 +228,63 @@ class _SplashScreenState extends State<SplashScreen> {
           name: userJson['name'],
           roleId: userJson['role_id'],
         );
-        navigateToNextScreen(user.roleId);
+        if(version!=current_version){
+          getupdate();
+        }
+        else {
+          navigateToNextScreen(user.roleId);
+        }
       } else {
         maketoast(msg: "Server down", ctx: context);
       }
     } else {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
-          Loginscreen()), (Route<dynamic> route) => false);
+      if(version!=current_version){
+        getupdate();
+      }
+      else {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) =>
+                Loginscreen()), (Route<dynamic> route) => false);
+      }
+    }
+  }
+
+  getupdate(){
+    return  showDialog(
+      context: context,
+      builder: (context) {
+        return WillPopScope(
+          onWillPop: () async => false, // Disable back button
+          child: SimpleDialog(
+            contentPadding: EdgeInsets.all(16),
+            children: <Widget>[
+              Text(
+                'Kindly update your App',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  // Redirect to a link
+                  launchURL(link);
+                  Navigator.of(context).pop(); // Close the dialog after redirection
+                },
+                child: Text('Update Now'),
+              ),
+            ],
+          ),
+        );
+      },
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+    );
+  }
+  void launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }
+
