@@ -17,6 +17,7 @@ class ANMHomescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<ANMHomescreen> {
+  bool _shouldGetData = true;
   String _name = "";
   String _mobile = "";
   String _role = "";
@@ -93,6 +94,8 @@ class _HomescreenState extends State<ANMHomescreen> {
             var data = {"ashaid": key, "ashaname": value.toString()};
             ashas.add(data);
           });
+          _shouldGetData = false;
+
         }
       } else {}
     } catch (e) {
@@ -114,6 +117,7 @@ class _HomescreenState extends State<ANMHomescreen> {
     getdata().then((value) {
       setState(() {
         loaded = true;
+        _shouldGetData = true;
       });
     });
   }
@@ -135,7 +139,7 @@ class _HomescreenState extends State<ANMHomescreen> {
                     decoration: BoxDecoration(color: Colors.blue),
                     padding: EdgeInsets.all(10),
                     child: FutureBuilder(
-                      future: getdata(),
+                      future: _shouldGetData ? getdata() : null,
                       builder: ((context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

@@ -1739,6 +1739,3 @@ class _UpdatePersonalState extends State<UpdatePersonal> {
 
 
 }
-
-
-

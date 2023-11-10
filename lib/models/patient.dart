@@ -42,6 +42,8 @@ class Patient {
   String? heighti;
   String? pastillness;
 
+  bool? highRiskOrNot = false;
+
   String? anc1Date;
   String? anc1Weekofpregnancy;
   String? anc1BpSystolic;

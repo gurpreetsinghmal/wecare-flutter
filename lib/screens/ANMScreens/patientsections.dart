@@ -19,8 +19,11 @@ class PatientSections extends StatefulWidget {
 }
 
 class _PatientSectionsState extends State<PatientSections> {
+
   @override
   Widget build(BuildContext context) {
+    widget.p.highRiskOrNot = widget.p.anc1Highrisk == "1" || widget.p.anc2Highrisk == "1"  || widget.p.anc3Highrisk == "1"  || widget.p.anc4Highrisk == "1"  ? true : false;
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(

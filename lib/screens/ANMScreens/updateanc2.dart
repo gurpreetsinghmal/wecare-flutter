@@ -64,7 +64,7 @@ class _UpdateAnc2State extends State<UpdateAnc2> {
       _Anc2BP1D.text=newdata!.anc2BpDiastolic??"";
       _Anc2BloodSugarFasting.text=newdata!.anc2Bloodsugarfasting??"";
       _Anc2BloodSugarPost.text=newdata!.anc2Bloodsugarpost??"";
-      _Anc2HighRisk.text=newdata!.anc2Highrisk??"0";
+      _Anc2HighRisk.text=newdata!.highRiskOrNot == true?"1":"0";
       _Anc2HBlevel1.text=newdata!.anc2Hblevel??"";
       _Anc2UrineTestSugar.text=newdata!.anc2Urinesugar??"";
       _Anc2UrineTestAlbumin.text=newdata!.anc2Urinealbumin??"";
@@ -442,32 +442,49 @@ class _UpdateAnc2State extends State<UpdateAnc2> {
   }
   Widget TextInputHightRisk1(){
 
-    return DropdownButtonFormField(
-      decoration: getinputstyle(
-          hint:
-          "High Risk"),
-      hint: Text("Select"),
-      items: [
-        DropdownMenuItem(
-            value:"1",
-            child: Text("Yes")),
-        DropdownMenuItem(
-            value:"0",
-            child: Text("No")),
-      ],
-      value:
-      _Anc2HighRisk.text,
-      validator: (v) {
-        if (v == null) {
-          return "Please choose";
-        }
-        return null;
-      },
-      onChanged: (v) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10), // Set the border radius here
+        color: widget.p.highRiskOrNot == true ? Colors.red[100] : null,
+      ),
+      child: DropdownButtonFormField(
+        decoration: getinputstyle(
+            hint:
+            "High Risk"),
+        hint: Text("Select"),
+        items: [
+          DropdownMenuItem(
+              value:"1",
+              child: Text("Yes",
+                style: TextStyle(
+                  //fontSize: widget.p.highRiskOrNot == true? 20 : null, // Increase font size if highRiskOrNot is "1"
+                  fontWeight: widget.p.highRiskOrNot == true ? FontWeight.bold : null, // Set to bold if highRiskOrNot is "1"
+                  color: widget.p.highRiskOrNot == true ? Colors.black : null,
+                ),)),
+          DropdownMenuItem(
+              value:"0",
+              child: Text("No")),
+        ],
+        value:
+        _Anc2HighRisk.text,
+        validator: (v) {
+          if (v == null) {
+            return "Please choose";
+          }
+          return null;
+        },
+          onChanged: widget.p.highRiskOrNot == true
+              ? null
+              : (v) {
 
-        _Anc2HighRisk.text=v.toString();
-
-      },
+            _Anc2HighRisk.text=v.toString();
+          },
+          onTap: () {
+            if (_Anc2HighRisk.text == "Yes") {
+              return null;
+            }
+          }
+      ),
     );
 
   }

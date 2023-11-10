@@ -18,6 +18,7 @@ class GDMOHomescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<GDMOHomescreen> {
+  bool _shouldGetData = true;
   String _name = "";
   String _mobile = "";
   String _role = "";
@@ -86,6 +87,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
           // _blockcode = jsonResponse["block_code"].toString();
           _smo = jsonResponse["smo"] ?? "NA";
           _profileimg = jsonResponse["photo"];
+          _shouldGetData = false;
 
           Map<String, dynamic>? a = jsonResponse["anms"];
           anms = [];
@@ -117,6 +119,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
     getdata().then((value) {
       setState(() {
         loaded = true;
+        _shouldGetData = true;
       });
     });
   }
@@ -140,7 +143,7 @@ class _HomescreenState extends State<GDMOHomescreen> {
               decoration: BoxDecoration(color: Colors.blue),
               padding: EdgeInsets.all(10),
               child: FutureBuilder(
-                future: getdata(),
+                future: _shouldGetData ? getdata() : null, //Only call getdata if _shouldGetData is true
                 builder: ((context, snapshot) {
                   if (snapshot.connectionState ==
                       ConnectionState.waiting) {

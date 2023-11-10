@@ -19,6 +19,7 @@ class ASHAHomescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<ASHAHomescreen> {
+  bool _shouldGetData = true;
   String _name = "";
   String _mobile = "";
   String _role = "";
@@ -83,6 +84,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
           _anm = jsonResponse["anm"] ?? "NA";
           village = jsonResponse["villages"];
           _profileimg = jsonResponse["photo"];
+          _shouldGetData = false;
         }
       } else {}
     } catch (e) {
@@ -105,6 +107,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
     getdata().then((value) {
       setState(() {
         loaded = true;
+        _shouldGetData = true;
       });
     });
   }
@@ -127,7 +130,7 @@ class _HomescreenState extends State<ASHAHomescreen> {
                     decoration: BoxDecoration(color: Colors.blue),
                     padding: EdgeInsets.all(10),
                     child: FutureBuilder(
-                      future: getdata(),
+                      future: _shouldGetData ? getdata() : null, //Only call getdata if _shouldGetData is true
                       builder: ((context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

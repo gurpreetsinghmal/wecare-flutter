@@ -34,6 +34,146 @@ TextField reusableTextField(String text,  bool isPasswordType,
 
 }
 
+Widget singleBoxDesign(IconData icon, String title) {
+  return Card(
+    color: Colors.blue[200],
+    elevation: 10,
+    child: Padding(
+      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0), // Adjust padding as needed
+      child: Column(
+        children: [
+          Icon(icon, size: 40), // Adjust icon size as needed
+          Text(title, textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold, // Set text to bold
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+Widget createRowBox(IconData icon, String value, String description) {
+  return Container(
+    padding: EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10.0),
+      color: Colors.blue[50],
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Icon(icon, size: 40),
+        Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              description,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+Widget customRow(
+    IconData icon,
+    String title,
+    String amount,
+    var size,
+    {Color? bgColor, VoidCallback? onTap}
+    ) {
+  bool isPressed = false;
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      margin: EdgeInsets.only(
+        top: 20,
+        left: 25,
+        right: 25,
+      ),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.teal.withOpacity(0.3),
+            spreadRadius: 3,
+            blurRadius: 7,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+          right: 20,
+          left: 20,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.blue[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Icon(icon),
+              ),
+            ),
+            SizedBox(width: 15),
+            Expanded(
+              child: Container(
+                width: (size.width - 90) * 0.7,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      amount,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 Container Button(BuildContext context, String title, Function onTap,{width=200.0}) {
   return Container(
     width: width,

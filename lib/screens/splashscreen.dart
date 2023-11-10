@@ -35,9 +35,10 @@ class _SplashScreenState extends State<SplashScreen> {
   String current_version="";
   @override
   void initState() {
+    fetchData();
     super.initState();
 
-    fetchData();
+
   }
 
 //   dd(){
@@ -169,7 +170,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'App Version : '+version,
+                  'App Version : '+ version,
                   style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
 
@@ -199,9 +200,10 @@ class _SplashScreenState extends State<SplashScreen> {
       PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
         String appName = packageInfo.appName;
         String packageName = packageInfo.packageName;
-         version = packageInfo.version;
         String buildNumber = packageInfo.buildNumber;
-
+          setState(() {
+            version = packageInfo.version;
+          });
       });
 
     } on PlatformException catch (exception) {
